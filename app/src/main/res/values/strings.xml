@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">GoingToHakwon</string>
+
+    <string-array name="info_textview">
+        <item>다니고 있는 학원을 입력해주세요.</item>
+        <item>학원에서 받은 비밀번호를 입력해주세요.</item>
+        <item>우리 아이의 이름을 입력해주세요.</item>
+    </string-array>
+
+    <string-array name="hint_edittext">
+        <item>학원 이름</item>
+        <item>비밀번호</item>
+        <item>이름</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
