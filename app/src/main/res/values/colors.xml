@@ -4,8 +4,14 @@
     <color name="primary">#3a86ff</color>
     <color name="mustard">#ffbe0b</color>
     <color name="blue">#8338ec</color>
+    <color name="orange">#fb5607</color>
+    <color name="navy">#003566</color>
 
     <color name="black">#000000</color>
+    <color name="black_800">#666666</color>
+
     <color name="white">#ffffff</color>
-    <color name="black_800">#3F3F3F</color>
+    <color name="white_900">#F2F2F2</color>
+    <color name="white_800">#E5E5E5</color>
+    <color name="white_600">#CCCCCC</color>
 </resources>

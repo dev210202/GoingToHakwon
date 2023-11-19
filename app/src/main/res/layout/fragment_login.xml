@@ -44,8 +44,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
+            android:stateListAnimator="@anim/nav_default_enter_anim"
             android:id="@+id/btn_next"
             style="@style/Widget.Material3.Button.Icon"
+            android:paddingRight="12dp"
+            android:elevation="8dp"
+
+            android:paddingLeft="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
