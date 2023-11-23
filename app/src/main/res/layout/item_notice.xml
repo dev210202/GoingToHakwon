@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="notice"
+            type="dev210202.goingtohakwon.Notice" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_notice"
+        android:background="@drawable/background_notice"
+        android:layout_marginBottom="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+
+        <TextView
+            android:text="@{notice.title}"
+            android:textColor="@color/black"
+            android:id="@+id/textView5"
+            style="@style/tv_medium.bold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="안녕하세요 예바미술여러분" />
+
+        <TextView
+            android:text="@{notice.date}"
+            android:id="@+id/textView6"
+            style="@style/tv_small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/black_500"
+            app:layout_constraintTop_toBottomOf="@+id/textView5"
+            tools:text="11월 18일" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

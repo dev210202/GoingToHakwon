@@ -1,4 +1,4 @@
-package dev210202.goingtohakwon
+package dev210202.goingtohakwon.view
 
 import android.os.Bundle
 import android.text.InputType
@@ -6,8 +6,9 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dutch2019.base.BaseFragment
+import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.FragmentLoginBinding
-import dev210202.goingtohakwon.util.showToast
+import dev210202.goingtohakwon.utils.showToast
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>(
 	R.layout.fragment_login
@@ -34,10 +35,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 		binding.btnNext.setOnClickListener {
 			when (infoText()) {
 				is1stStep() -> {
-					if(binding.edittext.text.toString().isEmpty()){
+					if (binding.edittext.text.toString().isEmpty()) {
 						showToast("학원 이름을 입력하세요.")
-					}
-					else {
+					} else {
 						viewModel.checkHakwon(
 							name = binding.edittext.text.toString(),
 							isSuccess = {
@@ -46,34 +46,40 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 									InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
 							},
 							isFail = { message ->
-								// showToast
 								showToast(message)
 							}
 						)
 					}
 				}
 				is2ndStep() -> {
-					if(binding.edittext.text.toString().isEmpty()){
+					if (binding.edittext.text.toString().isEmpty()) {
 						showToast("비밀번호를 입력하세요.")
-					}
-					else{
+					} else {
 						viewModel.checkPassword(
-							password = binding.edittext.text.toString(),
-							isSuccess = {
-								changeViewToStep(step = 3)
-								binding.edittext.inputType = InputType.TYPE_CLASS_TEXT
+							inputPassword = binding.edittext.text.toString(),
+							isSuccess = { message ->
+								when(message){
+									"일반" ->{
+										changeViewToStep(step = 3)
+										binding.edittext.inputType = InputType.TYPE_CLASS_TEXT
+									}
+									"관리자"->{
+										findNavController().navigate(
+											LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
+										)
+									}
+								}
 							},
-							isFail = {message ->
+							isFail = { message ->
 								showToast(message)
 							}
 						)
 					}
 				}
 				isEndStep() -> {
-					if(binding.edittext.text.toString().isEmpty()){
+					if (binding.edittext.text.toString().isEmpty()) {
 						showToast("이름를 입력하세요.")
-					}
-					else{
+					} else {
 						viewModel.checkName(
 							name = binding.edittext.text.toString(),
 							isSuccess = {

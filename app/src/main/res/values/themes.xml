@@ -16,7 +16,6 @@
 
     <style name="tv_medium">
         <item name="android:textSize">20sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="tv_medium.bold">
@@ -31,9 +30,7 @@
     <style name="tv_normal.bold">
         <item name="android:textStyle">bold</item>
     </style>
-    <!--
-     android:textColor="@color/black_800"
-            android:textSize="20sp"
-            android:textStyle="bold"
-    -->
+    <style name="tv_small">
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>
