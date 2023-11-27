@@ -1,5 +1,6 @@
 package dev210202.goingtohakwon.view
 
+import android.content.Context
 import android.os.Bundle
 import android.text.InputType
 import android.view.View
@@ -25,11 +26,36 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
+		readPreferences()
 		changeViewToStep(step = 1)
 		initButtonNext()
 
 	}
+
+	private fun readPreferences() {
+		val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+
+		sharedPref.run {
+
+			getString("hakwonName", null)?.let {
+				viewModel.setHakwonName(it)
+			}
+			getString("hakwonPassWord", null)?.let {
+				viewModel.setHakwonPassWord(it)
+			}
+			getString("childName", null)?.let {
+				viewModel.setChildName(it)
+			}
+			if (isExistPreferences()) {
+				findNavController().navigate(
+					LoginFragmentDirections.actionLoginFragmentToParentsMainFragment()
+				)
+			}
+		}
+	}
+
+	private fun isExistPreferences(): Boolean = viewModel.getHakwonName().isNotEmpty() && viewModel.getHakwonPassWord().isNotEmpty() && viewModel.getChildName().isNotEmpty()
+
 
 	private fun initButtonNext() {
 		binding.btnNext.setOnClickListener {
@@ -58,12 +84,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 						viewModel.checkPassword(
 							inputPassword = binding.edittext.text.toString(),
 							isSuccess = { message ->
-								when(message){
-									"일반" ->{
+								when (message) {
+									"일반" -> {
 										changeViewToStep(step = 3)
 										binding.edittext.inputType = InputType.TYPE_CLASS_TEXT
 									}
-									"관리자"->{
+									"관리자" -> {
 										findNavController().navigate(
 											LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
 										)
@@ -83,6 +109,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 						viewModel.checkName(
 							name = binding.edittext.text.toString(),
 							isSuccess = {
+
+								val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
+								val editor = sharedPref?.edit()
+								editor?.putString("hakwonName", viewModel.getHakwonName())
+								editor?.putString("hakwonPassWord", viewModel.getHakwonPassWord())
+								editor?.putString("childName", viewModel.getChildName())
+								editor?.apply()
 								findNavController().navigate(
 									LoginFragmentDirections.actionLoginFragmentToParentsMainFragment()
 								)

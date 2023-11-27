@@ -31,5 +31,8 @@ class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 				AdminMainFragmentDirections.actionAdminMainFragmentToAdminNoticeFragment()
 			)
 		}
+		binding.layoutAttendance.setOnClickListener {
+
+		}
 	}
 }

@@ -1,15 +1,20 @@
 package dev210202.goingtohakwon.view.parents
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.ImageButton
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.dutch2019.base.BaseFragment
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import dev210202.goingtohakwon.DayDecorator
 import dev210202.goingtohakwon.R
+import dev210202.goingtohakwon.TodayDecorator
 import dev210202.goingtohakwon.databinding.FragmentParentsMainBinding
-import dev210202.goingtohakwon.utils.getDaysOfWeek
-import dev210202.goingtohakwon.utils.getToday
-import dev210202.goingtohakwon.utils.showToast
+import dev210202.goingtohakwon.utils.*
 import dev210202.goingtohakwon.view.DataViewModel
 
 class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
@@ -56,6 +61,21 @@ class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
 		}
 
 		binding.layoutAttendance.setOnClickListener {
+
+			val view = layoutInflater.inflate(R.layout.layout_attendance, null)
+			val calendarDayList = viewModel.getAttendanceList()
+				.map { CalendarDay.from(it.getYear(), it.getMonth(), it.getDay()) }
+			val calendarView = view.findViewById<MaterialCalendarView>(R.id.calendarView)
+			calendarView.addDecorators(DayDecorator(calendarDayList, requireContext()), TodayDecorator(requireContext()) )
+
+			val builder = androidx.appcompat.app.AlertDialog.Builder(binding.layoutAttendance.context)
+			builder.setView(view)
+			val dialog = builder.create().apply { show() }
+
+			val closeButton = view.findViewById<ImageButton>(R.id.btn_close)
+			closeButton.setOnClickListener {
+				dialog.dismiss()
+			}
 
 		}
 		binding.layoutNotice.setOnClickListener {

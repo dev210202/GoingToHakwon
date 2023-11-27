@@ -8,6 +8,7 @@ import com.dutch2019.base.BaseViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -24,7 +25,15 @@ class DataViewModel : BaseViewModel() {
 
 	private val db = Firebase.firestore
 	private val storage = Firebase.storage
-	private lateinit var document: DocumentReference
+//	private lateinit var document: DocumentReference
+//
+//	private val doc :DocumentReference get() {
+//		return db.collection("hakwon").document(getHakwonName())
+//	}
+
+	private val document: DocumentReference get() {
+		return db.collection("hakwon").document(getHakwonName())
+	}
 
 	private var _noticeList = MutableListLiveData<Notice>()
 	val noticeList: LiveData<List<Notice>> get() = _noticeList
@@ -35,19 +44,33 @@ class DataViewModel : BaseViewModel() {
 	private var _attachmentList = MutableListLiveData<Uri>()
 	val attachmentList: LiveData<List<Uri>> get() = _attachmentList
 
+	private lateinit var documentList: QuerySnapshot
 
 	private var hakwonName = ""
 	private var childName = ""
+	private var hakwonPassWord = ""
 
 	fun getHakwonName() = hakwonName
-	fun getChildName() = childName
+	fun setHakwonName(name: String) {
+		hakwonName = name
+	}
 
+	fun getChildName() = childName
+	fun setChildName(name: String) {
+		childName = name
+	}
+
+	fun getHakwonPassWord() = hakwonPassWord
+	fun setHakwonPassWord(password: String) {
+		hakwonPassWord = password
+	}
 	fun getNoticeList() = _noticeList.value!!
 
 	fun addAttachmentList(uri: Uri) {
 		_attachmentList.add(uri)
 	}
 
+	fun getAttendanceList() = _attendanceList.value!!
 	fun getAttachmentList(): List<String> {
 		return _attachmentList.value!!.map { it.lastPathSegment.toString() }
 	}
@@ -57,7 +80,8 @@ class DataViewModel : BaseViewModel() {
 		isSuccess: () -> Unit,
 		isFail: (message: String) -> Unit
 	) {
-		document = db.collection("hakwon").document(name)
+		hakwonName = name
+//		document = db.collection("hakwon").document(name)
 
 		document.get().addOnSuccessListener { result ->
 			if (result.exists()) {
@@ -70,8 +94,6 @@ class DataViewModel : BaseViewModel() {
 			Log.e("exception", it.message.toString())
 			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 
-			val newDocument = Firebase.firestore.collection("hakwon").document(name)
-			document = newDocument
 		}
 
 	}
@@ -83,8 +105,9 @@ class DataViewModel : BaseViewModel() {
 	) {
 		document.get().addOnSuccessListener { result ->
 			if (result.exists()) {
-				val hakwonPassword = result.data?.get("password").toString()
-				if (inputPassword == hakwonPassword) {
+				val parentsPassWord = result.data?.get("password").toString()
+				if (inputPassword == parentsPassWord) {
+					hakwonPassWord = inputPassword
 					isSuccess("일반")
 				} else {
 					val adminPassword = result.data?.get("adminpassword").toString()
@@ -113,10 +136,13 @@ class DataViewModel : BaseViewModel() {
 		}
 	}
 
+
 	fun getNotice(isFail: (message: String) -> Unit) {
+
 		document.collection("안내문").get().addOnSuccessListener { documents ->
 			if (!documents.isEmpty) {
 				val noticeList = mutableListOf<Notice>()
+				documentList = documents
 				for (document in documents) {
 					noticeList.add(document.toObjectNonNull())
 				}
@@ -131,6 +157,45 @@ class DataViewModel : BaseViewModel() {
 
 	fun addNotice(notice: Notice, isSuccess: () -> Unit, isFail: (message: String) -> Unit) {
 		document.collection("안내문").add(notice).addOnSuccessListener {
+			isSuccess()
+		}.addOnFailureListener {
+			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+		}.addOnCompleteListener {
+			if (it.isSuccessful) {
+				isSuccess()
+			}
+		}
+	}
+
+	fun deleteNotice(
+		position: Int,
+		isSuccess: () -> Unit,
+		isFail: (message: String) -> Unit
+	) {
+		val doc = documentList.documents[position].reference
+		Log.e("doc!!", "!!$doc")
+		doc.delete().addOnSuccessListener {
+			_noticeList.remove(_noticeList.get(position))
+			isSuccess()
+		}.addOnFailureListener {
+			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+		}
+	}
+
+
+	fun editNotice(
+		notice: Notice,
+		position: Int,
+		isSuccess: () -> Unit,
+		isFail: (message: String) -> Unit
+	) {
+		val doc = documentList.documents[position].reference
+		doc.run {
+			update("title", notice.title)
+			update("content", notice.content)
+			update("date", notice.date)
+			update("attachment", notice.attachment)
+		}.addOnSuccessListener {
 			isSuccess()
 		}.addOnFailureListener {
 			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
@@ -190,16 +255,21 @@ class DataViewModel : BaseViewModel() {
 		}
 	}
 
-	fun downloadAttachment(uri: String, isSuccess: (uri : Uri) -> Unit, isFail: (message: String) -> Unit) {
+	fun downloadAttachment(
+		uri: String,
+		isSuccess: (uri: Uri) -> Unit,
+		isFail: (message: String) -> Unit
+	) {
 		val pathString = "${getHakwonName()}/${uri}"
 		Log.e("PATH ", pathString)
-		storage.reference.child(pathString).downloadUrl.addOnCompleteListener {task ->
-			if(task.isSuccessful){
+		storage.reference.child(pathString).downloadUrl.addOnCompleteListener { task ->
+			if (task.isSuccessful) {
 				isSuccess(task.result)
 			}
 		}.addOnFailureListener {
 			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 		}
 	}
+
 
 }

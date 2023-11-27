@@ -1,5 +1,6 @@
 package dev210202.goingtohakwon
 
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import dev210202.goingtohakwon.utils.convertToFormat
 import org.junit.Assert.*
 import org.junit.Test
@@ -54,6 +55,11 @@ class ExampleUnitTest {
 			}
 		}
 		println(daysOfWeek.toString())
+	}
+
+	@Test
+	fun d(){
+		println(CalendarDay.today())
 	}
 }
 

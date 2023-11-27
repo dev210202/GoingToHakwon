@@ -20,7 +20,10 @@ class MutableListLiveData<T> : MutableLiveData<List<T>>() {
         temp.add(item)
         value = temp
     }
-
+    fun get(index: Int): T{
+        val temp = value!!.toMutableList()
+        return temp[index]
+    }
     fun addAll(items: List<T>) {
         val temp = value!!.toMutableList()
         temp.addAll(items)

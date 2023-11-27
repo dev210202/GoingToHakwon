@@ -24,6 +24,7 @@
         <action
             android:id="@+id/action_parentsMainFragment_to_noticeFragment"
             app:destination="@id/noticeFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/adminMainFragment"
@@ -63,6 +64,10 @@
         <action
             android:id="@+id/action_adminNoticeFragment_to_adminAddNoticeFragment"
             app:destination="@id/adminAddNoticeFragment" />
+        <action
+            android:id="@+id/action_adminNoticeFragment_to_adminNoticeEditFragment"
+            app:destination="@id/adminNoticeEditFragment" />
+
     </fragment>
     <fragment
         tools:layout="@layout/fragment_admin_notice_detail"
@@ -78,4 +83,18 @@
         android:id="@+id/adminAddNoticeFragment"
         android:name="dev210202.goingtohakwon.view.admin.AdminAddNoticeFragment"
         android:label="AdminAddNoticeFragment" />
+    <fragment
+        tools:layout="@layout/fragment_admin_notice_edit"
+        android:id="@+id/adminNoticeEditFragment"
+        android:name="dev210202.goingtohakwon.view.admin.AdminNoticeEditFragment"
+        android:label="AdminNoticeEditFragment" >
+        <argument
+            android:name="notice"
+            app:argType="dev210202.goingtohakwon.Notice" />
+        <argument
+            android:name="position"
+            app:argType="integer" />
+    </fragment>
+
+
 </navigation>

@@ -6,5 +6,5 @@ data class Notice(
 	val date: String = "",
 	val title : String = "",
 	val content: String = "",
-	val attachment: List<String> = listOf()
+	val attachment: List<String> = listOf("")
 ) : Serializable

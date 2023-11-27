@@ -2,6 +2,7 @@
 <resources>
 
     <color name="primary">#3a86ff</color>
+    <color name="primary_light">#D3E4FF</color>
     <color name="mustard">#ffbe0b</color>
     <color name="blue">#8338ec</color>
     <color name="orange">#fb5607</color>

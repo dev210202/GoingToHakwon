@@ -13,8 +13,10 @@ class AttachmentAdapter(
 	private var attachmentList = mutableListOf<String>()
 
 	fun setAttachList(list: List<String>) {
-		if (list.isNotEmpty()) {
-			attachmentList = list.toMutableList()
+		val attachList=  list.toMutableList()
+		attachList.removeAll{it.isEmpty()}
+		if (attachList.isNotEmpty()) {
+			attachmentList = attachList
 			notifyDataSetChanged()
 		}
 	}
