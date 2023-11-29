@@ -1,6 +1,8 @@
 package dev210202.goingtohakwon.utils
 
+import android.provider.ContactsContract.Data
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import java.time.LocalTime
 import java.util.*
 
 fun getDaysOfWeek(): MutableList<String> {
@@ -21,6 +23,10 @@ fun getDaysOfWeek(): MutableList<String> {
 fun getToday(): String {
 	val cal = Calendar.getInstance(Locale.KOREA)
 	return cal.time.convertToFormat()
+}
+
+fun getTime(): String {
+	return Date().convertToTime()
 }
 
 fun CalendarDay.getToday() : String{

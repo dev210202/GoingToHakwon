@@ -30,10 +30,10 @@ class AdminAttendanceFragment : BaseFragment<FragmentAdminAttendanceBinding>(
 		binding.calendarView.addDecorator(TodayDecorator(requireContext()))
 		binding.rvAttendance.adapter = adminAttendanceAdapter
 		binding.calendarView.setOnDateChangedListener { widget, date, selected ->
-
-			viewModel.getAttendanceStudents(date.getToday(), isFail = {
-				//showToast(it)
-			})
+			viewModel.getAttendanceStudents(viewModel.getHakwonName())
+//			viewModel.getAttendanceStudents(date.getToday(), isFail = {
+//				//showToast(it)
+//			})
 		}
 		binding.fabPerson.setOnClickListener {
 			findNavController().navigate(

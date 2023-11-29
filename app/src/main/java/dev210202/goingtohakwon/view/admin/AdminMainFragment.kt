@@ -6,9 +6,14 @@ import androidx.fragment.app.activityViewModels
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.FragmentAdminMainBinding
+import dev210202.goingtohakwon.model.Attendance
+import dev210202.goingtohakwon.utils.getTime
+import dev210202.goingtohakwon.utils.getToday
 import dev210202.goingtohakwon.utils.showToast
 import dev210202.goingtohakwon.view.DataViewModel
-
+/*
+	fin - 11.29 17:00
+ */
 class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 	R.layout.fragment_admin_main
 ) {
@@ -17,33 +22,42 @@ class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 		binding.hakwonName = viewModel.getHakwonName()
 
 		binding.btnYes.setOnClickListener {
-			viewModel.checkAttendance(
-				childName= binding.etChild.text.toString(),
-				state = "출석"
-			)
+			if (binding.etChild.text.toString().isNotEmpty()) {
+				checkAttendance("출석")
+			} else {
+				showToast("이름을 입력하고 출석해주세요.")
+			}
 		}
 		binding.btnLate.setOnClickListener {
-			viewModel.
+			if (binding.etChild.text.toString().isNotEmpty()) {
+				checkAttendance("지각")
+			} else {
+				showToast("이름을 입력하고 출석해주세요.")
+			}
 		}
-//
-//		binding.btnNext.setOnClickListener {
-//			viewModel.confirmAttendance(binding.edittext.text.toString(),
-//				isSuccess = { message ->
-//					showToast(message)
-//				},
-//				isFail = { message ->
-//					showToast(message)
-//				})
-//		}
-//		binding.layoutNotice.setOnClickListener {
-//			findNavController().navigate(
-//				AdminMainFragmentDirections.actionAdminMainFragmentToAdminNoticeFragment()
-//			)
-//		}
-//		binding.layoutAttendance.setOnClickListener {
-//			findNavController().navigate(
-//				AdminMainFragmentDirections.actionAdminMainFragmentToAdminAttendanceFragment()
-//			)
-//		}
+
+		binding.btnNo.setOnClickListener {
+			if (binding.etChild.text.toString().isNotEmpty()) {
+				checkAttendance("결석")
+			} else {
+				showToast("이름을 입력하고 출석해주세요.")
+			}
+		}
+	}
+
+	private fun checkAttendance(state: String) {
+		viewModel.checkAttendance(
+			hakwonName = viewModel.getHakwonName(),
+			studentName = binding.etChild.text.toString(),
+			date = getToday(),
+			time = getTime(),
+			state = state,
+			isSuccess = {
+				showToast("$state 처리되었습니다.")
+			},
+			isFail = {
+				showToast(it.message)
+			}
+		)
 	}
 }

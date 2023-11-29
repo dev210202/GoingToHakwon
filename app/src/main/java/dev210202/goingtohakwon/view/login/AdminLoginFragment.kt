@@ -7,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import dev210202.goingtohakwon.Notice
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.databinding.FragmentAdminLoginBinding
 import dev210202.goingtohakwon.model.Hakwon
+import dev210202.goingtohakwon.model.Student
 import dev210202.goingtohakwon.utils.showToast
 import dev210202.goingtohakwon.view.DataViewModel
 import dev210202.goingtohakwon.view.admin.AdminMainActivity
@@ -32,7 +34,9 @@ class AdminLoginFragment : BaseFragment<FragmentAdminLoginBinding>(
 				viewModel.createHakwon(
 					Hakwon(
 						name = binding.etHakwonName.text.toString(),
-						password = binding.etPassword.text.toString()
+						password = binding.etPassword.text.toString(),
+						notices = listOf(Notice()),
+						students = listOf(Student())
 					),
 					isSuccess = {
 						// TODO: Toast 표시될 멘트 변경
@@ -40,7 +44,7 @@ class AdminLoginFragment : BaseFragment<FragmentAdminLoginBinding>(
 					},
 					isFail = {
 						// TODO: Toast 표시될 멘트 변경
-						showToast(it.name)
+						showToast(it.message)
 					}
 				)
 			} else {
@@ -54,7 +58,7 @@ class AdminLoginFragment : BaseFragment<FragmentAdminLoginBinding>(
 					},
 					isFail = {
 						// TODO: Toast 표시될 멘트 변경
-						showToast(it.name)
+						showToast(it.message)
 					}
 				)
 			}

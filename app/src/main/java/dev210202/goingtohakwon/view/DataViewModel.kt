@@ -14,8 +14,9 @@ import com.google.firebase.storage.ktx.storage
 import dev210202.goingtohakwon.AttendanceList
 import dev210202.goingtohakwon.MutableListLiveData
 import dev210202.goingtohakwon.Notice
+import dev210202.goingtohakwon.model.Attendance
 import dev210202.goingtohakwon.model.Hakwon
-import dev210202.goingtohakwon.utils.FailMessage
+import dev210202.goingtohakwon.utils.Message
 import dev210202.goingtohakwon.utils.getToday
 import dev210202.goingtohakwon.utils.toObjectNonNull
 
@@ -316,39 +317,117 @@ class DataViewModel : BaseViewModel() {
 		childName: String,
 		phone: String,
 		isSuccess: () -> Unit,
-		isFail: (FailMessage) -> Unit
+		isFail: (Message) -> Unit
 	) {
 		// Firebase DB에 학원명, 자녀명, 휴대전화 뒷번호로 등록
 	}
 
-	fun createHakwon(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (FailMessage) -> Unit) {
-		database.child(hakwon.name).setValue(hakwon).addOnSuccessListener {
-			isSuccess()
+	fun createHakwon(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (Message) -> Unit) {
+
+		checkExistHakwon(hakwon, isSuccess = { message ->
+			when (message) {
+				Message.CAN_REGIST_HAKWON -> {
+					database.child(hakwon.name).setValue(hakwon).addOnSuccessListener {
+						isSuccess()
+					}.addOnFailureListener {
+						isFail(Message.NETWORK_ERROR)
+					}
+				}
+				Message.REGIST_HAKWON -> {
+					isFail(Message.REGIST_HAKWON)
+				}
+				else -> {}
+			}
+		}, isFail = {
+			isFail(it)
+		})
+
+	}
+
+	private fun checkExistHakwon(
+		hakwon: Hakwon,
+		isSuccess: (Message) -> Unit,
+		isFail: (Message) -> Unit
+	) {
+		database.child(hakwon.name).get().addOnSuccessListener { dataSnapshot ->
+			if (dataSnapshot.exists()) {
+				isSuccess(Message.REGIST_HAKWON)
+			} else {
+				isSuccess(Message.CAN_REGIST_HAKWON)
+			}
 		}.addOnFailureListener {
-			isFail(FailMessage.NETWORK)
+			isFail(Message.NETWORK_ERROR)
 		}
 	}
 
-	fun adminLogin(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (FailMessage) -> Unit) {
+	fun adminLogin(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (Message) -> Unit) {
 		database.child(hakwon.name).get().addOnSuccessListener { dataSnapshot ->
 			if (dataSnapshot.exists()) {
 				val password = dataSnapshot.child("password").value
 				if (password == hakwon.password) {
 					isSuccess()
 				} else {
-					isFail(FailMessage.NOT_CORRECT_PW)
+					isFail(Message.NOT_CORRECT_PW)
 				}
 			} else {
-				isFail(FailMessage.NOT_REGIST_HAKWON)
+				isFail(Message.NOT_REGIST_HAKWON)
 			}
 		}.addOnFailureListener {
-			isFail(FailMessage.NETWORK)
+			isFail(Message.NETWORK_ERROR)
 		}
 	}
 
-	fun checkAttendance(childName: String, state: String, isSuccess: () -> Unit, isFail: (FailMessage) -> Unit) {
+	fun checkAttendance(
+		hakwonName: String,
+		studentName: String,
+		date: String,
+		time: String,
+		state: String,
+		isSuccess: () -> Unit,
+		isFail: (Message) -> Unit
+	) {
+		checkExistStudent(hakwonName, studentName, isSuccess = {
+			database.child(hakwonName).child("students").child(studentName).child("attendance")
+				.child(date).setValue(Attendance(time, state))
+				.addOnSuccessListener {
+					isSuccess()
+				}.addOnFailureListener {
+					isFail(Message.NETWORK_ERROR)
+				}
+		}, isFail = {
+			isFail(it)
+		})
 
 	}
 
+	fun checkExistStudent(
+		hakwonName: String,
+		studentName: String,
+		isSuccess: (Message) -> Unit,
+		isFail: (Message) -> Unit
+	) {
+		database.child(hakwonName).child("students").child(studentName).get()
+			.addOnSuccessListener { dataSnapshot ->
+				if (dataSnapshot.exists()) {
+					isSuccess(Message.REGIST_STUDENT)
+				} else {
+					isFail(Message.NOT_REGIST_STUDENT)
+				}
+			}.addOnFailureListener {
+				isFail(Message.NETWORK_ERROR)
+			}
+	}
 
+	fun getAttendanceStudents(
+		hakwonName: String
+	) {
+		database.child(hakwonName).child("students").get().addOnSuccessListener { dataSnapshot ->
+			//Log.e("DS Value", dataSnapshot.value.toString())
+
+			val value = dataSnapshot.value as ArrayList<*>
+			value.forEach { student ->
+				Log.e("student", student.toString())
+			}
+		}
+	}
 }

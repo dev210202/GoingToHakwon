@@ -15,11 +15,11 @@ fun Fragment.showToast(message: String) =
 		.show()
 
 fun Date.convertToFormat(): String = SimpleDateFormat("yyyy-MM-dd").format(this)
+
+fun Date.convertToTime() : String = SimpleDateFormat("HH:mm").format(this)
 fun String.getDay(): Int = this.split("-")[2].toInt()
 fun String.getMonth(): Int = this.split("-")[1].toInt()
 fun String.getYear(): Int = this.split("-")[0].toInt()
 inline fun <reified T> DocumentSnapshot.toObjectNonNull(): T = toObject(T::class.java)!!
 
 val QuerySnapshot.isNotEmpty get() = !this.isEmpty
-
-
