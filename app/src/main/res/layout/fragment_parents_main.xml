@@ -108,7 +108,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
-            android:text="출석 확인"
+            android:text="이번주 출석"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
@@ -373,86 +373,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_attendance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/background_main_buttons"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="parent">
 
-            <ImageButton
-                android:id="@+id/imageButton2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:background="@drawable/ic_attendacne_24_white_900"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                style="@style/tv_normal.bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="출석 확인하기"
-                android:textColor="@color/white_900"
-                app:layout_constraintBottom_toBottomOf="@+id/imageButton2"
-                app:layout_constraintStart_toEndOf="@+id/imageButton2"
-                app:layout_constraintTop_toTopOf="@+id/imageButton2" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_next_36_white_900"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_notice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="8dp"
-            android:background="@drawable/background_main_buttons"
-            android:padding="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/layout_attendance"
-            tools:layout_editor_absoluteX="16dp">
-
-            <ImageButton
-                android:id="@+id/imageButton3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:background="@drawable/ic_notice_24_white_900"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                style="@style/tv_normal.bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="안내문 확인하기"
-                android:textColor="@color/white_900"
-                app:layout_constraintBottom_toBottomOf="@+id/imageButton3"
-                app:layout_constraintStart_toEndOf="@+id/imageButton3"
-                app:layout_constraintTop_toTopOf="@+id/imageButton3" />
-
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/ic_next_36_white_900"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

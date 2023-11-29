@@ -42,7 +42,7 @@ class AdminNoticeFragment : BaseFragment<FragmentAdminNoticeBinding>(
 						}
 						R.id.dropdown_menu_delete -> {
 							viewModel.deleteNotice(position, isSuccess = {
-								showToast("삭제 성공")
+								showToast(it)
 							},
 							isFail = {
 								showToast(it)

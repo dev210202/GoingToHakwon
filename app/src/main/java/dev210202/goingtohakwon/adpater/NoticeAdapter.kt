@@ -16,7 +16,6 @@ class NoticeAdapter(
 	@JvmName("setNoticeList")
 	fun setHakwonNoticeList(list: List<Notice>) {
 		hakwonNoticeList = list.toMutableList()
-		Log.e("Notice List", hakwonNoticeList.toString())
 		notifyDataSetChanged()
 	}
 

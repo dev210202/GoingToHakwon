@@ -1,21 +1,24 @@
 package dev210202.goingtohakwon.view
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
-import android.view.View
+import android.util.Log
+import androidx.activity.viewModels
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.dutch2019.base.BaseFragment
+import com.dutch2019.base.BaseActivity
 import dev210202.goingtohakwon.R
-import dev210202.goingtohakwon.databinding.FragmentLoginBinding
+import dev210202.goingtohakwon.databinding.ActivityLoginBinding
 import dev210202.goingtohakwon.utils.showToast
+import dev210202.goingtohakwon.view.admin.AdminMainActivity
+import dev210202.goingtohakwon.view.parents.ParentsMainActivity
 
-class LoginFragment : BaseFragment<FragmentLoginBinding>(
-	R.layout.fragment_login
+class LoginActivity : BaseActivity<ActivityLoginBinding>(
+	R.layout.activity_login
 ) {
-
-	private val viewModel: DataViewModel by activityViewModels()
+	private val viewModel: DataViewModel by viewModels()
 
 	private val infoTextViewArray by lazy {
 		resources.getStringArray(R.array.info_textview)
@@ -25,15 +28,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 		resources.getStringArray(R.array.hint_edittext)
 	}
 
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
 		readPreferences()
 		changeViewToStep(step = 1)
 		initButtonNext()
-
 	}
 
 	private fun readPreferences() {
-		val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
+		val sharedPref = this?.getSharedPreferences("hakwon",Context.MODE_PRIVATE) ?: return
 
 		sharedPref.run {
 
@@ -47,14 +50,24 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 				viewModel.setChildName(it)
 			}
 			if (isExistPreferences()) {
-				findNavController().navigate(
-					LoginFragmentDirections.actionLoginFragmentToParentsMainFragment()
-				)
+				startParentsMainActivity()
+
 			}
 		}
 	}
 
-	private fun isExistPreferences(): Boolean = viewModel.getHakwonName().isNotEmpty() && viewModel.getHakwonPassWord().isNotEmpty() && viewModel.getChildName().isNotEmpty()
+	private fun startParentsMainActivity() {
+		var intent = Intent(this@LoginActivity, ParentsMainActivity::class.java)
+		intent.putExtra("hakwonName",viewModel.getHakwonName())
+		intent.putExtra("childName", viewModel.getChildName())
+
+		startActivity(intent)
+		finish()
+	}
+
+	private fun isExistPreferences(): Boolean =
+		viewModel.getHakwonName().isNotEmpty() && viewModel.getHakwonPassWord()
+			.isNotEmpty() && viewModel.getChildName().isNotEmpty()
 
 
 	private fun initButtonNext() {
@@ -84,15 +97,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 						viewModel.checkPassword(
 							inputPassword = binding.edittext.text.toString(),
 							isSuccess = { message ->
-								when (message) {
+									when (message) {
 									"일반" -> {
 										changeViewToStep(step = 3)
 										binding.edittext.inputType = InputType.TYPE_CLASS_TEXT
 									}
 									"관리자" -> {
-										findNavController().navigate(
-											LoginFragmentDirections.actionLoginFragmentToAdminMainFragment()
-										)
+										startAdminMainActivity()
 									}
 								}
 							},
@@ -109,16 +120,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 						viewModel.checkName(
 							name = binding.edittext.text.toString(),
 							isSuccess = {
+								setPreferences()
 
-								val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-								val editor = sharedPref?.edit()
-								editor?.putString("hakwonName", viewModel.getHakwonName())
-								editor?.putString("hakwonPassWord", viewModel.getHakwonPassWord())
-								editor?.putString("childName", viewModel.getChildName())
-								editor?.apply()
-								findNavController().navigate(
-									LoginFragmentDirections.actionLoginFragmentToParentsMainFragment()
-								)
+								startParentsMainActivity()
 							},
 							isFail = { message ->
 								showToast(message)
@@ -129,6 +133,22 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(
 			}
 			clearEditTextInput()
 		}
+	}
+
+	private fun setPreferences() {
+		val sharedPref = this.getSharedPreferences("hakwon", Context.MODE_PRIVATE)
+		val editor = sharedPref?.edit()
+		editor?.putString("hakwonName", viewModel.getHakwonName())
+		editor?.putString("hakwonPassWord", viewModel.getHakwonPassWord())
+		editor?.putString("childName", viewModel.getChildName())
+		editor?.apply()
+	}
+
+	private fun startAdminMainActivity() {
+		var intent = Intent(this, AdminMainActivity::class.java)
+		intent.putExtra("hakwonName", viewModel.getHakwonName())
+		startActivity(intent)
+		finish()
 	}
 
 	private fun infoText() = binding.tvInfo.text.toString()

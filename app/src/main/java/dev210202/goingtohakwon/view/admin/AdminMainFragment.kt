@@ -26,13 +26,15 @@ class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 					showToast(message)
 				})
 		}
-		binding.layoutNotice.setOnClickListener {
-			findNavController().navigate(
-				AdminMainFragmentDirections.actionAdminMainFragmentToAdminNoticeFragment()
-			)
-		}
-		binding.layoutAttendance.setOnClickListener {
-
-		}
+//		binding.layoutNotice.setOnClickListener {
+//			findNavController().navigate(
+//				AdminMainFragmentDirections.actionAdminMainFragmentToAdminNoticeFragment()
+//			)
+//		}
+//		binding.layoutAttendance.setOnClickListener {
+//			findNavController().navigate(
+//				AdminMainFragmentDirections.actionAdminMainFragmentToAdminAttendanceFragment()
+//			)
+//		}
 	}
 }

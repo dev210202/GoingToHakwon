@@ -60,7 +60,7 @@ class AdminNoticeEditFragment : BaseFragment<FragmentAdminNoticeEditBinding>(
 							title = binding.etTitle.text.toString(),
 							content = binding.etContent.text.toString(),
 							attachment = viewModel.getAttachmentList()
-						), position, isSuccess = { showToast("성공") }, isFail = { showToast(it) })
+						), position, isSuccess = { showToast(it) }, isFail = { showToast(it) })
 				}, isFail = {
 					showToast(it)
 				})

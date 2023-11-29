@@ -22,12 +22,16 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(
 				)
 			}
 		).apply {
-			setHakwonNoticeList(viewModel.getNoticeList())
+			setHakwonNoticeList(listOf())
 		}
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		binding.hakwonName = viewModel.getHakwonName()
 		binding.rvNotice.adapter = noticeAdapter
+
+		viewModel.noticeList.observe(this){
+			noticeAdapter.setHakwonNoticeList(viewModel.getNoticeList())
+		}
 	}
 }

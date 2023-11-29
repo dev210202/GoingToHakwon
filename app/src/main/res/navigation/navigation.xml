@@ -3,29 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/adminMainFragment">
 
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="dev210202.goingtohakwon.view.LoginFragment"
-        android:label="LoginFragment" >
-        <action
-            android:id="@+id/action_loginFragment_to_parentsMainFragment"
-            app:destination="@id/parentsMainFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_adminMainFragment"
-            app:destination="@id/adminMainFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/parentsMainFragment"
-        android:name="dev210202.goingtohakwon.view.parents.ParentsMainFragment"
-        android:label="fragment_parents_main"
-        tools:layout="@layout/fragment_parents_main" >
-        <action
-            android:id="@+id/action_parentsMainFragment_to_noticeFragment"
-            app:destination="@id/noticeFragment" />
 
-    </fragment>
     <fragment
         android:id="@+id/adminMainFragment"
         android:name="dev210202.goingtohakwon.view.admin.AdminMainFragment"
@@ -34,25 +14,12 @@
         <action
             android:id="@+id/action_adminMainFragment_to_adminNoticeFragment"
             app:destination="@id/adminNoticeFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/noticeFragment"
-        android:name="dev210202.goingtohakwon.view.parents.NoticeFragment"
-        android:label="NoticeFragment"
-        tools:layout="@layout/fragment_notice">
         <action
-            android:id="@+id/action_noticeFragment_to_noticeDetailFragment"
-            app:destination="@id/noticeDetailFragment" />
+            android:id="@+id/action_adminMainFragment_to_adminAttendanceFragment"
+            app:destination="@id/adminAttendanceFragment" />
     </fragment>
-    <fragment
-        tools:layout="@layout/fragment_notice_detail"
-        android:id="@+id/noticeDetailFragment"
-        android:name="dev210202.goingtohakwon.view.parents.NoticeDetailFragment"
-        android:label="NoticeDetailFragment" >
-        <argument
-            android:name="notice"
-            app:argType="dev210202.goingtohakwon.Notice" />
-    </fragment>
+
+
     <fragment
         tools:layout="@layout/fragment_admin_notice"
         android:id="@+id/adminNoticeFragment"
@@ -95,6 +62,35 @@
             android:name="position"
             app:argType="integer" />
     </fragment>
+    <fragment
+        tools:layout="@layout/fragment_admin_attendance"
+        android:id="@+id/adminAttendanceFragment"
+        android:name="dev210202.goingtohakwon.view.admin.AdminAttendanceFragment"
+        android:label="AdminAttendanceFragment" >
+        <action
+            android:id="@+id/action_adminAttendanceFragment_to_adminAttendancePersonFragment"
+            app:destination="@id/adminAttendancePersonFragment" />
+        <action
+            app:popUpTo="@id/adminMainFragment"
+            app:popUpToInclusive="true"
+            android:id="@+id/action_adminAttendanceFragment_to_adminMainFragment"
+            app:destination="@id/adminMainFragment" />
+    </fragment>
+     <fragment
+        tools:layout="@layout/fragment_admin_attendance_person"
+        android:id="@+id/adminAttendancePersonFragment"
+        android:name="dev210202.goingtohakwon.view.admin.AdminAttendancePersonFragment"
+        android:label="AdminAttendancePersonFragment" >
+         <action
+             android:id="@+id/action_adminAttendancePersonFragment_to_adminAttendanceFragment"
+             app:destination="@id/adminAttendanceFragment"
+             />
+         <action
+             app:popUpTo="@id/adminMainFragment"
+             app:popUpToInclusive="true"
+             android:id="@+id/action_adminAttendancePersonFragment_to_adminMainFragment"
+             app:destination="@id/adminMainFragment" />
+     </fragment>
 
 
 </navigation>

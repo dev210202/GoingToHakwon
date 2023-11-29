@@ -46,7 +46,7 @@ class AdminAddNoticeFragment : BaseFragment<FragmentAdminAddNoticeBinding>(
 							content = binding.etContent.text.toString(),
 							attachment = viewModel.getAttachmentList()
 						), isSuccess = {
-							showToast("등록되었습니다.")
+							showToast("등록 되었습니다.")
 						}, isFail = {
 							showToast(it)
 						})

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parents_navigation"
+    app:startDestination="@id/parentsMainFragment">
+    <fragment
+        android:id="@+id/parentsMainFragment"
+        android:name="dev210202.goingtohakwon.view.parents.ParentsMainFragment"
+        android:label="fragment_parents_main"
+        tools:layout="@layout/fragment_parents_main" >
+        <action
+            android:id="@+id/action_parentsMainFragment_to_noticeFragment"
+            app:destination="@id/noticeFragment" />
+        <action
+            android:id="@+id/action_parentsMainFragment_to_settingFragment2"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_parentsMainFragment_to_attendanceFragment2"
+            app:destination="@id/attendanceFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/noticeFragment"
+        android:name="dev210202.goingtohakwon.view.parents.NoticeFragment"
+        android:label="NoticeFragment"
+        tools:layout="@layout/fragment_notice">
+        <action
+            android:id="@+id/action_noticeFragment_to_noticeDetailFragment"
+            app:destination="@id/noticeDetailFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_notice_detail"
+        android:id="@+id/noticeDetailFragment"
+        android:name="dev210202.goingtohakwon.view.parents.NoticeDetailFragment"
+        android:label="NoticeDetailFragment" >
+        <argument
+            android:name="notice"
+            app:argType="dev210202.goingtohakwon.Notice" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_setting"
+        android:id="@+id/settingFragment"
+        android:name="dev210202.goingtohakwon.view.parents.SettingFragment"
+        android:label="SettingFragment" />
+    <fragment
+        tools:layout="@layout/fragment_attendance"
+        android:id="@+id/attendanceFragment"
+        android:name="dev210202.goingtohakwon.view.parents.AttendanceFragment"
+        android:label="AttendanceFragment" />
+</navigation>

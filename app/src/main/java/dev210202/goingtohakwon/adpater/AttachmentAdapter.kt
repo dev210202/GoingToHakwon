@@ -21,10 +21,17 @@ class AttachmentAdapter(
 		}
 	}
 
+	private fun removeAttach(attachment: String){
+		attachmentList.remove(attachment)
+		notifyDataSetChanged()
+	}
+
 	inner class AttachmentViewHolder(
 		private val binding: ItemAttachmentBinding
 	) : ViewHolder(binding.root) {
 		val attachmentLayout = binding.layoutAttachment
+		val removeLayout = binding.layoutRemove
+		val removeButton = binding.btnRemove
 		fun bind(title: String) {
 			binding.title = title
 		}
@@ -48,6 +55,9 @@ class AttachmentAdapter(
 		holder.bind(title)
 		holder.attachmentLayout.setOnClickListener {
 			onAttachmentClicked(title)
+		}
+		holder.removeButton.setOnClickListener {
+			removeAttach(attachmentList[position])
 		}
 	}
 }

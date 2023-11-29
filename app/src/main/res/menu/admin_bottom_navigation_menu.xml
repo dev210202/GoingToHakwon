@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/adminMainFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_home_24"
+        android:title="홈"/>
+    <item
+        android:id="@+id/adminNoticeFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_notice_24_white_900"
+        android:title="안내문 관리"/>
+    <item
+        android:id="@+id/adminAttendanceFragment"
+        android:enabled="true"
+        android:icon="@drawable/ic_attendance_24_white_900"
+        android:title="출석 관리"
+        />
+</menu>

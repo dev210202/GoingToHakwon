@@ -13,25 +13,41 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_attachment"
         android:background="@drawable/background_notice"
-        android:layout_marginBottom="12dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
 
         <TextView
-            android:text="@{title}"
-            android:textColor="@color/black"
+            android:layout_marginHorizontal="16dp"
             android:id="@+id/textView5"
             style="@style/tv_normal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@{title}"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toBottomOf="@+id/layout_remove"
+            app:layout_constraintEnd_toStartOf="@+id/layout_remove"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/layout_remove"
             tools:text="첨부파일 1" />
 
 
+        <LinearLayout
+
+            android:padding="16dp"
+            android:id="@+id/layout_remove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/btn_remove"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_remove_24" />
+        </LinearLayout>
 
 
 

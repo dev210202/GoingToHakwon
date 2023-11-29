@@ -1,5 +1,6 @@
 package dev210202.goingtohakwon.utils
 
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import java.util.*
 
 fun getDaysOfWeek(): MutableList<String> {
@@ -20,4 +21,8 @@ fun getDaysOfWeek(): MutableList<String> {
 fun getToday(): String {
 	val cal = Calendar.getInstance(Locale.KOREA)
 	return cal.time.convertToFormat()
+}
+
+fun CalendarDay.getToday() : String{
+	return "${this.year}-${this.month + 1}-${this.day}"
 }

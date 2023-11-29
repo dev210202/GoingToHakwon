@@ -22,6 +22,7 @@ class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
 ) {
 	private val viewModel: DataViewModel by activityViewModels()
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
 		binding.hakwonName = viewModel.getHakwonName()
 
 		viewModel.getNotice(
@@ -31,6 +32,7 @@ class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
 		)
 
 		viewModel.getAttendance(
+			name = viewModel.getChildName(),
 			isFail = { message ->
 				showToast(message)
 			}
@@ -60,29 +62,38 @@ class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
 
 		}
 
-		binding.layoutAttendance.setOnClickListener {
+//		binding.bottomNavigation.setOnItemSelectedListener {item ->
+//			when(item.itemId){
+//				R.id.home -> {
+//
+//				}
+//			}
+//
+//		}
 
-			val view = layoutInflater.inflate(R.layout.layout_attendance, null)
-			val calendarDayList = viewModel.getAttendanceList()
-				.map { CalendarDay.from(it.getYear(), it.getMonth(), it.getDay()) }
-			val calendarView = view.findViewById<MaterialCalendarView>(R.id.calendarView)
-			calendarView.addDecorators(DayDecorator(calendarDayList, requireContext()), TodayDecorator(requireContext()) )
-
-			val builder = androidx.appcompat.app.AlertDialog.Builder(binding.layoutAttendance.context)
-			builder.setView(view)
-			val dialog = builder.create().apply { show() }
-
-			val closeButton = view.findViewById<ImageButton>(R.id.btn_close)
-			closeButton.setOnClickListener {
-				dialog.dismiss()
-			}
-
-		}
-		binding.layoutNotice.setOnClickListener {
-			findNavController().navigate(
-				ParentsMainFragmentDirections.actionParentsMainFragmentToNoticeFragment()
-			)
-		}
+//		binding.layoutAttendance.setOnClickListener {
+//
+//			val view = layoutInflater.inflate(R.layout.layout_attendance, null)
+//			val calendarDayList = viewModel.getAttendanceList()
+//				.map { CalendarDay.from(it.getYear(), it.getMonth() - 1, it.getDay()) }
+//			val calendarView = view.findViewById<MaterialCalendarView>(R.id.calendarView)
+//			calendarView.addDecorators(DayDecorator(calendarDayList, requireContext()), TodayDecorator(requireContext()) )
+//
+//			val builder = androidx.appcompat.app.AlertDialog.Builder(binding.layoutAttendance.context)
+//			builder.setView(view)
+//			val dialog = builder.create().apply { show() }
+//
+//			val closeButton = view.findViewById<ImageButton>(R.id.btn_close)
+//			closeButton.setOnClickListener {
+//				dialog.dismiss()
+//			}
+//
+//		}
+//		binding.layoutNotice.setOnClickListener {
+//			findNavController().navigate(
+//				ParentsMainFragmentDirections.actionParentsMainFragmentToNoticeFragment()
+//			)
+//		}
 	}
 
 	private fun getTvStateMap(thisWeek: List<String>) = mapOf(

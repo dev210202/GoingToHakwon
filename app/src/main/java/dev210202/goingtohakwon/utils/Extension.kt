@@ -1,5 +1,6 @@
 package dev210202.goingtohakwon.utils
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.DocumentSnapshot
@@ -7,6 +8,8 @@ import com.google.firebase.firestore.QuerySnapshot
 import java.text.SimpleDateFormat
 import java.util.*
 
+fun Activity.showToast(message: String) = Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT)
+	.show()
 fun Fragment.showToast(message: String) =
 	Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT)
 		.show()
