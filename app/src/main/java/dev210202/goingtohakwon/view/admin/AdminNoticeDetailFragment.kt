@@ -2,18 +2,14 @@ package dev210202.goingtohakwon.view.admin
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import com.dutch2019.base.BaseFragment
+import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.adpater.AttachmentAdapter
 import dev210202.goingtohakwon.databinding.FragmentAdminNoticeDetailBinding
 import dev210202.goingtohakwon.utils.showToast
 import dev210202.goingtohakwon.view.DataViewModel
-import dev210202.goingtohakwon.view.parents.NoticeDetailFragmentArgs
 
 
 class AdminNoticeDetailFragment : BaseFragment<FragmentAdminNoticeDetailBinding>(

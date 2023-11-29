@@ -1,23 +1,13 @@
-package dev210202.goingtohakwon.view
+package dev210202.goingtohakwon.view.login
 
-import android.content.Context
-import android.content.Intent
-import android.os.Bundle
-import android.text.InputType
-import android.util.Log
-import androidx.activity.viewModels
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import com.dutch2019.base.BaseActivity
+import dev210202.goingtohakwon.base.BaseActivity
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.ActivityLoginBinding
-import dev210202.goingtohakwon.utils.showToast
-import dev210202.goingtohakwon.view.admin.AdminMainActivity
-import dev210202.goingtohakwon.view.parents.ParentsMainActivity
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>(
 	R.layout.activity_login
 ) {
+	/*
 	private val viewModel: DataViewModel by viewModels()
 
 	private val infoTextViewArray by lazy {
@@ -167,5 +157,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(
 	private fun is2ndStep() = infoTextViewArray[1]
 
 	private fun isEndStep() = infoTextViewArray.last()
+*/
 
 }

@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
-import com.dutch2019.base.BaseFragment
+import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.adpater.AttachmentAdapter
 import dev210202.goingtohakwon.databinding.FragmentNoticeDetailBinding

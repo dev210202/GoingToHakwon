@@ -1,4 +1,4 @@
-package com.dutch2019.base
+package dev210202.goingtohakwon.base
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

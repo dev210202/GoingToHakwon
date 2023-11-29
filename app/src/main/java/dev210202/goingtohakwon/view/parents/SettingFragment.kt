@@ -3,14 +3,11 @@ package dev210202.goingtohakwon.view.parents
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import com.dutch2019.base.BaseFragment
+import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.FragmentSettingBinding
-import dev210202.goingtohakwon.view.LoginActivity
+import dev210202.goingtohakwon.view.login.LoginActivity
 
 class SettingFragment : BaseFragment<FragmentSettingBinding>(
 	R.layout.fragment_setting

@@ -3,7 +3,8 @@ package dev210202.goingtohakwon.view
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
-import com.dutch2019.base.BaseViewModel
+import com.google.firebase.database.ktx.database
+import dev210202.goingtohakwon.base.BaseViewModel
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
@@ -13,22 +14,21 @@ import com.google.firebase.storage.ktx.storage
 import dev210202.goingtohakwon.AttendanceList
 import dev210202.goingtohakwon.MutableListLiveData
 import dev210202.goingtohakwon.Notice
+import dev210202.goingtohakwon.model.Hakwon
+import dev210202.goingtohakwon.utils.FailMessage
 import dev210202.goingtohakwon.utils.getToday
 import dev210202.goingtohakwon.utils.toObjectNonNull
 
 class DataViewModel : BaseViewModel() {
 
-	private val db = Firebase.firestore
+	private val store = Firebase.firestore
 	private val storage = Firebase.storage
-	//	private lateinit var document: DocumentReference
-	//
-	//	private val doc :DocumentReference get() {
-	//		return db.collection("hakwon").document(getHakwonName())
-	//	}
+	private val database = Firebase.database.reference
 
+	//
 	private val document: DocumentReference
 		get() {
-			return db.collection("hakwon").document(getHakwonName())
+			return store.collection("hakwon").document(getHakwonName())
 		}
 
 	private var _noticeList = MutableListLiveData<Notice>()
@@ -78,7 +78,7 @@ class DataViewModel : BaseViewModel() {
 	fun checkHakwon(
 		name: String,
 		isSuccess: () -> Unit,
-		isFail: (message: String) -> Unit
+		isFail: (String) -> Unit
 	) {
 		setHakwonName(name)
 
@@ -86,11 +86,11 @@ class DataViewModel : BaseViewModel() {
 			if (result.exists()) {
 				isSuccess()
 			} else {
-				isFail("일치하는 학원이 없습니다. 다시 시도해주세요.")
+				//isFail("일치하는 학원이 없습니다. 다시 시도해주세요.")
 			}
 		}.addOnFailureListener {
 			Log.e("exception", it.message.toString())
-			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 
 		}
 
@@ -98,44 +98,44 @@ class DataViewModel : BaseViewModel() {
 
 	fun checkPassword(
 		inputPassword: String,
-		isSuccess: (message: String) -> Unit,
-		isFail: (message: String) -> Unit
+		isSuccess: (String) -> Unit,
+		isFail: (String) -> Unit
 	) {
 		setHakwonPassWord(inputPassword)
 		document.get().addOnSuccessListener { result ->
 			if (result.exists()) {
 				val parentsPassWord = result.data?.get("password").toString()
 				if (inputPassword == parentsPassWord) {
-					isSuccess("일반")
+					//	isSuccess("일반")
 				} else {
 					val adminPassword = result.data?.get("adminpassword").toString()
 					if (inputPassword == adminPassword) {
-						isSuccess("관리자")
+						//isSuccess("관리자")
 					} else {
-						isFail("비밀번호가 다릅니다.")
+						//	isFail("비밀번호가 다릅니다.")
 					}
 				}
 			}
 		}.addOnFailureListener {
-			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 		}
 	}
 
-	fun checkName(name: String, isSuccess: () -> Unit, isFail: (message: String) -> Unit) {
+	fun checkName(name: String, isSuccess: () -> Unit, isFail: (String) -> Unit) {
 		setChildName(name)
 		document.collection("학원생").document(name).get().addOnSuccessListener { result ->
 			if (result.exists()) {
 				isSuccess()
 			} else {
-				isFail("일치하는 이름이 없습니다. 다시 시도해주세요.")
+				//isFail("일치하는 이름이 없습니다. 다시 시도해주세요.")
 			}
 		}.addOnFailureListener {
-			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 		}
 	}
 
 
-	fun getNotice(isFail: (message: String) -> Unit) {
+	fun getNotice(isFail: (String) -> Unit) {
 
 		document.collection("안내문").get().addOnSuccessListener { documents ->
 			if (!documents.isEmpty) {
@@ -146,18 +146,18 @@ class DataViewModel : BaseViewModel() {
 				}
 				_noticeList.value = noticeList
 			} else {
-				isFail("불러올 수 있는 공지사항이 없습니다.")
+				//	isFail("불러올 수 있는 공지사항이 없습니다.")
 			}
 		}.addOnFailureListener {
-			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 		}
 	}
 
-	fun addNotice(notice: Notice, isSuccess: () -> Unit, isFail: (message: String) -> Unit) {
+	fun addNotice(notice: Notice, isSuccess: () -> Unit, isFail: (String) -> Unit) {
 		document.collection("안내문").add(notice).addOnSuccessListener {
 			isSuccess()
 		}.addOnFailureListener {
-			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 		}.addOnCompleteListener {
 			if (it.isSuccessful) {
 				isSuccess()
@@ -167,15 +167,15 @@ class DataViewModel : BaseViewModel() {
 
 	fun deleteNotice(
 		position: Int,
-		isSuccess: (message: String) -> Unit,
-		isFail: (message: String) -> Unit
+		isSuccess: (String) -> Unit,
+		isFail: (String) -> Unit
 	) {
 		val doc = documentList.documents[position].reference
 		doc.delete().addOnSuccessListener {
 			_noticeList.remove(_noticeList.get(position))
-			isSuccess("삭제 되었습니다.")
+			//isSuccess("삭제 되었습니다.")
 		}.addOnFailureListener {
-			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+			//	isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 		}
 	}
 
@@ -183,8 +183,8 @@ class DataViewModel : BaseViewModel() {
 	fun editNotice(
 		notice: Notice,
 		position: Int,
-		isSuccess: (message: String) -> Unit,
-		isFail: (message: String) -> Unit
+		isSuccess: (String) -> Unit,
+		isFail: (String) -> Unit
 	) {
 		val doc = documentList.documents[position].reference
 		doc.run {
@@ -193,16 +193,16 @@ class DataViewModel : BaseViewModel() {
 			update("date", notice.date)
 			update("attachment", notice.attachment)
 		}.addOnSuccessListener {
-			isSuccess("수정 되었습니다.")
+			//isSuccess("수정 되었습니다.")
 		}.addOnFailureListener {
-			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 		}
 	}
 
 	fun confirmAttendance(
 		inputName: String,
-		isSuccess: (message: String) -> Unit,
-		isFail: (message: String) -> Unit
+		isSuccess: (String) -> Unit,
+		isFail: (String) -> Unit
 	) {
 		// 출석 리스트를 가져와야함
 		document.collection("학원생").document(inputName).get()
@@ -213,21 +213,21 @@ class DataViewModel : BaseViewModel() {
 							getToday()
 						)
 					)
-					isSuccess("출석 되었습니다.")
+					//isSuccess("출석 되었습니다.")
 				} else {
 					document.collection("학원생").document(inputName).set(
 						AttendanceList(
 							attendance = listOf(getToday())
 						)
 					)
-					isSuccess("출석 되었습니다.")
+					//isSuccess("출석 되었습니다.")
 				}
 			}.addOnFailureListener {
-				isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+				//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 			}
 	}
 
-	fun getAttendance(name: String, isFail: (message: String) -> Unit) {
+	fun getAttendance(name: String, isFail: (String) -> Unit) {
 		document.collection("학원생").document(name).get()
 			.addOnSuccessListener { documentSnapshot ->
 				if (documentSnapshot.exists()) {
@@ -240,17 +240,17 @@ class DataViewModel : BaseViewModel() {
 					}
 				} else {
 					_attendanceList.value = listOf()
-					isFail("일치하는 이름이 없습니다. 다시 시도해주세요.")
+					//isFail("일치하는 이름이 없습니다. 다시 시도해주세요.")
 				}
 			}.addOnFailureListener {
-				isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+				//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 			}
 	}
 
 
 	fun getAttendanceStudents(
 		today: String,
-		isFail: (message: String) -> Unit
+		isFail: (String) -> Unit
 	) {
 		document.collection("학원생").whereArrayContains("attendance", today).get()
 			.addOnSuccessListener { documents ->
@@ -264,21 +264,21 @@ class DataViewModel : BaseViewModel() {
 					}
 				} else {
 					_attendanceStudentList.value = listOf()
-					isFail("출석한 학생이 없습니다.")
+					//	isFail("출석한 학생이 없습니다.")
 				}
 			}.addOnFailureListener {
-				isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+				//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 			}
 	}
 
-	fun addAttachments(isSuccess: () -> Unit, isFail: (message: String) -> Unit) {
+	fun addAttachments(isSuccess: () -> Unit, isFail: (String) -> Unit) {
 
 		_attachmentList.value!!.forEach { uri ->
 			storage.reference.child("${getHakwonName()}/${uri.lastPathSegment}").putFile(uri)
 				.addOnSuccessListener {
 					isSuccess()
 				}.addOnFailureListener {
-					isFail(it.message.toString())
+					//isFail(it.message.toString())
 				}
 		}
 	}
@@ -286,7 +286,7 @@ class DataViewModel : BaseViewModel() {
 	fun downloadAttachment(
 		uri: String,
 		isSuccess: (uri: Uri) -> Unit,
-		isFail: (message: String) -> Unit
+		isFail: (String) -> Unit
 	) {
 		val pathString = "${getHakwonName()}/${uri}"
 		Log.e("PATH ", pathString)
@@ -295,8 +295,59 @@ class DataViewModel : BaseViewModel() {
 				isSuccess(task.result)
 			}
 		}.addOnFailureListener {
-			isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
 		}
+	}
+
+	//
+	fun login(
+		hakwonName: String,
+		childName: String,
+		phone: String,
+		isSuccess: () -> Unit,
+		isFail: (String) -> Unit
+	) {
+		// Firbase DB에서 학원명, 자녀명, 휴대전화 뒷번호가 모두 일치하는 데이터가 있는지 확인
+
+	}
+
+	fun registChild(
+		hakwonName: String,
+		childName: String,
+		phone: String,
+		isSuccess: () -> Unit,
+		isFail: (FailMessage) -> Unit
+	) {
+		// Firebase DB에 학원명, 자녀명, 휴대전화 뒷번호로 등록
+	}
+
+	fun createHakwon(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (FailMessage) -> Unit) {
+		database.child(hakwon.name).setValue(hakwon).addOnSuccessListener {
+			isSuccess()
+		}.addOnFailureListener {
+			isFail(FailMessage.NETWORK)
+		}
+	}
+
+	fun adminLogin(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (FailMessage) -> Unit) {
+		database.child(hakwon.name).get().addOnSuccessListener { dataSnapshot ->
+			if (dataSnapshot.exists()) {
+				val password = dataSnapshot.child("password").value
+				if (password == hakwon.password) {
+					isSuccess()
+				} else {
+					isFail(FailMessage.NOT_CORRECT_PW)
+				}
+			} else {
+				isFail(FailMessage.NOT_REGIST_HAKWON)
+			}
+		}.addOnFailureListener {
+			isFail(FailMessage.NETWORK)
+		}
+	}
+
+	fun checkAttendance(childName: String, state: String, isSuccess: () -> Unit, isFail: (FailMessage) -> Unit) {
+
 	}
 
 

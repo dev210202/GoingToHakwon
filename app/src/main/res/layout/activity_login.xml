@@ -12,56 +12,18 @@
         android:layout_height="match_parent"
         android:background="@color/white"
         android:orientation="vertical"
-        tools:context=".view.LoginActivity">
+        tools:context=".view.login.LoginActivity">
 
-
-        <TextView
-            android:id="@+id/tv_info"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nav_host"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:textColor="@color/black_600"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:text="다니고 있는 학원을 입력해주세요."
-            tools:visibility="visible" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textfield"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            app:boxStrokeColor="@color/primary"
-            app:helperTextEnabled="true"
-            tools:visibility="visible">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edittext"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="주이식" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:stateListAnimator="@anim/nav_default_enter_anim"
-            android:id="@+id/btn_next"
-            style="@style/Widget.Material3.Button.Icon"
-            android:paddingRight="12dp"
-            android:elevation="8dp"
-
-            android:paddingLeft="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="16dp"
-            android:text="다음"
-
-            android:textStyle="bold"
-            app:icon="@drawable/ic_next_24_black_800"
-            app:iconGravity="end" />
-
-
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navGraph="@navigation/login_navigation" />
     </LinearLayout>
 </layout>

@@ -1,15 +1,10 @@
 package dev210202.goingtohakwon.view.admin
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import androidx.activity.addCallback
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.dutch2019.base.BaseFragment
-import dev210202.goingtohakwon.DayDecorator
+import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.TodayDecorator
 import dev210202.goingtohakwon.adpater.AdminAttendanceAdapter
@@ -37,7 +32,7 @@ class AdminAttendanceFragment : BaseFragment<FragmentAdminAttendanceBinding>(
 		binding.calendarView.setOnDateChangedListener { widget, date, selected ->
 
 			viewModel.getAttendanceStudents(date.getToday(), isFail = {
-				showToast(it)
+				//showToast(it)
 			})
 		}
 		binding.fabPerson.setOnClickListener {

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/login_navigation"
+    app:startDestination="@id/loginMainFragment">
+
+    <fragment
+        tools:layout="@layout/fragment_login_main"
+        android:id="@+id/loginMainFragment"
+        android:name="dev210202.goingtohakwon.view.login.LoginMainFragment"
+        android:label="LoginMainFragment" >
+        <action
+            android:id="@+id/action_loginMainFragment_to_parentsLoginFragment"
+            app:destination="@id/parentsLoginFragment" />
+        <action
+            android:id="@+id/action_loginMainFragment_to_adminLoginFragment"
+            app:destination="@id/adminLoginFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_parents_login"
+        android:id="@+id/parentsLoginFragment"
+        android:name="dev210202.goingtohakwon.view.login.ParentsLoginFragment"
+        android:label="ParentsLoginFragment" />
+    <fragment
+        tools:layout="@layout/fragment_admin_login"
+        android:id="@+id/adminLoginFragment"
+        android:name="dev210202.goingtohakwon.view.login.AdminLoginFragment"
+        android:label="AdminLoginFragment" />
+</navigation>

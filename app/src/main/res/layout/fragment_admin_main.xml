@@ -10,10 +10,11 @@
             type="String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:padding="16dp"
         tools:context=".view.admin.AdminMainFragment">
 
         <TextView
@@ -21,10 +22,7 @@
             style="@style/tv_large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/layout_stroke_bottom"
-            android:gravity="center"
+            android:gravity="start"
             android:paddingBottom="8dp"
             android:text="@{hakwonName}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -38,8 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="12dp"
-            android:layout_marginStart="16dp"
-            android:text="출석확인"
+            android:text="출석체크"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -47,8 +44,6 @@
             android:id="@+id/textfield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginTop="12dp"
             android:hint="이름"
             app:boxStrokeColor="@color/primary"
             app:helperTextEnabled="true"
@@ -58,29 +53,56 @@
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edittext"
+                android:id="@+id/et_child"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="주이식" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/btn_next"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:elevation="8dp"
-            android:stateListAnimator="@anim/nav_default_enter_anim"
-            android:text="확인"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
 
-            android:textStyle="bold"
+            <Button
+                android:id="@+id/btn_yes"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:stateListAnimator="@anim/nav_default_enter_anim"
+                android:text="출석"
 
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textfield" />
+                android:textStyle="bold" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/btn_late"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_weight="1"
+                android:stateListAnimator="@anim/nav_default_enter_anim"
+                android:text="지각"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_no"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:stateListAnimator="@anim/nav_default_enter_anim"
+                android:text="결석"
+                android:textColor="@color/red"
+                android:textStyle="bold"
+
+                app:strokeColor="@color/red" />
+
+
+        </LinearLayout>
+    </LinearLayout>
 </layout>

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.dutch2019.base.BaseFragment
+import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.adpater.NoticeAdapter
 import dev210202.goingtohakwon.databinding.FragmentNoticeBinding

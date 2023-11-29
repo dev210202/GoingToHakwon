@@ -1,18 +1,10 @@
 package dev210202.goingtohakwon.view.parents
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import android.widget.ImageButton
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
-import com.dutch2019.base.BaseFragment
-import com.prolificinteractive.materialcalendarview.CalendarDay
-import com.prolificinteractive.materialcalendarview.MaterialCalendarView
-import dev210202.goingtohakwon.DayDecorator
+import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
-import dev210202.goingtohakwon.TodayDecorator
 import dev210202.goingtohakwon.databinding.FragmentParentsMainBinding
 import dev210202.goingtohakwon.utils.*
 import dev210202.goingtohakwon.view.DataViewModel
