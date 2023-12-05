@@ -39,7 +39,7 @@
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edittext"
+                android:id="@+id/et_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="주이식" />
@@ -47,7 +47,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/btn_next"
+            android:id="@+id/btn_search"
             style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_next"
+            app:layout_constraintTop_toBottomOf="@+id/btn_search"
             app:mcv_firstDayOfWeek="sunday" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

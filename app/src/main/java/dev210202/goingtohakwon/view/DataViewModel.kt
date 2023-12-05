@@ -3,22 +3,20 @@ package dev210202.goingtohakwon.view
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
+import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import dev210202.goingtohakwon.AttendanceList
-import dev210202.goingtohakwon.MutableListLiveData
+import dev210202.goingtohakwon.model.MutableListLiveData
 import dev210202.goingtohakwon.base.BaseViewModel
 import dev210202.goingtohakwon.model.Attendance
 import dev210202.goingtohakwon.model.Hakwon
 import dev210202.goingtohakwon.model.Notice
 import dev210202.goingtohakwon.model.Student
 import dev210202.goingtohakwon.utils.Message
-import dev210202.goingtohakwon.utils.getToday
 
 class DataViewModel : BaseViewModel() {
 
@@ -35,14 +33,14 @@ class DataViewModel : BaseViewModel() {
 	private var _noticeList = MutableListLiveData<Notice>()
 	val noticeList: LiveData<List<Notice>> get() = _noticeList
 
-	private var _attendanceList = MutableListLiveData<String>()
-	val attendanceList: LiveData<List<String>> get() = _attendanceList
+	private var _attendanceList = MutableListLiveData<Attendance>()
+	val attendanceList: LiveData<List<Attendance>> get() = _attendanceList
 
 	private var _attachmentList = MutableListLiveData<Uri>()
 	val attachmentList: LiveData<List<Uri>> get() = _attachmentList
 
-	private var _attendanceStudentList = MutableListLiveData<String>()
-	val attendanceStudentList: LiveData<List<String>> get() = _attendanceStudentList
+	private var _attendanceStudentList = MutableListLiveData<Student>()
+	val attendanceStudentList: LiveData<List<Student>> get() = _attendanceStudentList
 
 	private lateinit var documentList: QuerySnapshot
 
@@ -80,138 +78,6 @@ class DataViewModel : BaseViewModel() {
 	fun getAttendanceList() = _attendanceList.value!!
 	fun getAttachmentList(): List<String> {
 		return _attachmentList.value!!.map { it.lastPathSegment.toString() }
-	}
-
-	fun checkHakwon(
-		name: String,
-		isSuccess: () -> Unit,
-		isFail: (String) -> Unit
-	) {
-		setHakwonName(name)
-
-		document.get().addOnSuccessListener { result ->
-			if (result.exists()) {
-				isSuccess()
-			} else {
-				//isFail("일치하는 학원이 없습니다. 다시 시도해주세요.")
-			}
-		}.addOnFailureListener {
-			Log.e("exception", it.message.toString())
-			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
-
-		}
-
-	}
-
-	fun checkPassword(
-		inputPassword: String,
-		isSuccess: (String) -> Unit,
-		isFail: (String) -> Unit
-	) {
-		setHakwonPassWord(inputPassword)
-		document.get().addOnSuccessListener { result ->
-			if (result.exists()) {
-				val parentsPassWord = result.data?.get("password").toString()
-				if (inputPassword == parentsPassWord) {
-					//	isSuccess("일반")
-				} else {
-					val adminPassword = result.data?.get("adminpassword").toString()
-					if (inputPassword == adminPassword) {
-						//isSuccess("관리자")
-					} else {
-						//	isFail("비밀번호가 다릅니다.")
-					}
-				}
-			}
-		}.addOnFailureListener {
-			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
-		}
-	}
-
-	fun checkName(name: String, isSuccess: () -> Unit, isFail: (String) -> Unit) {
-		setChildName(name)
-		document.collection("학원생").document(name).get().addOnSuccessListener { result ->
-			if (result.exists()) {
-				isSuccess()
-			} else {
-				//isFail("일치하는 이름이 없습니다. 다시 시도해주세요.")
-			}
-		}.addOnFailureListener {
-			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
-		}
-	}
-
-
-	fun confirmAttendance(
-		inputName: String,
-		isSuccess: (String) -> Unit,
-		isFail: (String) -> Unit
-	) {
-		// 출석 리스트를 가져와야함
-		document.collection("학원생").document(inputName).get()
-			.addOnSuccessListener { documentSnapshot ->
-				if (documentSnapshot.exists()) {
-					document.collection("학원생").document(inputName).update(
-						"attendance", FieldValue.arrayUnion(
-							getToday()
-						)
-					)
-					//isSuccess("출석 되었습니다.")
-				} else {
-					document.collection("학원생").document(inputName).set(
-						AttendanceList(
-							attendance = listOf(getToday())
-						)
-					)
-					//isSuccess("출석 되었습니다.")
-				}
-			}.addOnFailureListener {
-				//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
-			}
-	}
-
-	fun getAttendance(name: String, isFail: (String) -> Unit) {
-		document.collection("학원생").document(name).get()
-			.addOnSuccessListener { documentSnapshot ->
-				if (documentSnapshot.exists()) {
-					documentSnapshot.data?.get("attendance")?.let {
-						_attendanceList.value = mutableListOf<String>().apply {
-							(it as List<String>).forEach { date ->
-								add(date)
-							}
-						}
-					}
-				} else {
-					_attendanceList.value = listOf()
-					//isFail("일치하는 이름이 없습니다. 다시 시도해주세요.")
-				}
-			}.addOnFailureListener {
-				//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
-			}
-	}
-
-
-	fun getAttendanceStudents(
-		today: String,
-		isFail: (String) -> Unit
-	) {
-		document.collection("학원생").whereArrayContains("attendance", today).get()
-			.addOnSuccessListener { documents ->
-				if (!documents.isEmpty) {
-					mutableListOf<String>().apply {
-						for (document in documents) {
-							add(document.id)
-						}
-					}.run {
-						_attendanceStudentList.value = this
-					}
-				} else {
-					_attendanceStudentList.value = listOf()
-					//	isFail("출석한 학생이 없습니다.")
-				}
-			}.addOnFailureListener {
-				//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
-			}
 	}
 
 	fun addAttachments(isSuccess: () -> Unit, isFail: (Message) -> Unit) {
@@ -290,6 +156,7 @@ class DataViewModel : BaseViewModel() {
 					Message.NOT_REGIST_STUDENT -> {
 						database.child(hakwonName).child("students").child(childName).setValue(
 							Student(
+								name = childName,
 								phone = phone
 							)
 						).addOnSuccessListener {
@@ -314,9 +181,9 @@ class DataViewModel : BaseViewModel() {
 
 	fun createHakwon(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (Message) -> Unit) {
 
-		checkExistHakwon(hakwon, isSuccess = { message ->
+		checkExistHakwon(hakwon.name, result = { message ->
 			when (message) {
-				Message.CAN_REGIST_HAKWON -> {
+				Message.NOT_REGIST_HAKWON -> {
 					database.child(hakwon.name).setValue(hakwon).addOnSuccessListener {
 						isSuccess()
 					}.addOnFailureListener {
@@ -326,27 +193,27 @@ class DataViewModel : BaseViewModel() {
 				Message.REGIST_HAKWON -> {
 					isFail(Message.REGIST_HAKWON)
 				}
+				Message.NETWORK_ERROR -> {
+					isFail(Message.NETWORK_ERROR)
+				}
 				else -> {}
 			}
-		}, isFail = {
-			isFail(it)
 		})
 
 	}
 
-	private fun checkExistHakwon(
-		hakwon: Hakwon,
-		isSuccess: (Message) -> Unit,
-		isFail: (Message) -> Unit
+	fun checkExistHakwon(
+		hakwonName: String,
+		result: (Message) -> Unit,
 	) {
-		database.child(hakwon.name).get().addOnSuccessListener { dataSnapshot ->
+		database.child(hakwonName).get().addOnSuccessListener { dataSnapshot ->
 			if (dataSnapshot.exists()) {
-				isSuccess(Message.REGIST_HAKWON)
+				result(Message.REGIST_HAKWON)
 			} else {
-				isSuccess(Message.CAN_REGIST_HAKWON)
+				result(Message.NOT_REGIST_HAKWON)
 			}
 		}.addOnFailureListener {
-			isFail(Message.NETWORK_ERROR)
+			result(Message.NETWORK_ERROR)
 		}
 	}
 
@@ -383,10 +250,10 @@ class DataViewModel : BaseViewModel() {
 			phone = phone,
 			result = { message ->
 				when (message) {
-					Message.REGIST_STUDENT, Message.NOT_REGIST_STUDENT -> {
+					Message.REGIST_STUDENT -> {
 						database.child(hakwonName).child("students").child(studentName)
 							.child("attendance")
-							.child(date).setValue(Attendance(time, state))
+							.child(date).setValue(Attendance(date, time, state))
 							.addOnSuccessListener {
 								isSuccess()
 							}.addOnFailureListener {
@@ -396,12 +263,21 @@ class DataViewModel : BaseViewModel() {
 					Message.NETWORK_ERROR -> {
 						isFail(Message.NETWORK_ERROR)
 					}
+					Message.NOT_REGIST_STUDENT -> {
+						isFail(Message.NOT_REGIST_STUDENT)
+					}
 					else -> {}
 				}
 
 			})
 
 	}
+
+	/*
+			
+	-- Student --
+			
+	 */
 
 	private fun checkExistStudent(
 		hakwonName: String,
@@ -426,19 +302,97 @@ class DataViewModel : BaseViewModel() {
 			}
 	}
 
-	fun getAttendanceStudents(
+	fun getAttendancesOnName(
+		studentName: String,
+		hakwonName: String,
+	) {
+		database.child(hakwonName).child("students").child(studentName).child("attendance").get()
+			.addOnSuccessListener { dataSnapshot ->
+				Log.e("datasnapshot", dataSnapshot.toString())
+				if (dataSnapshot.exists()) {
+					dataSnapshot.children.forEach { data ->
+						var attendance = Attendance(
+						)
+						//					var attendance = ""
+						data.children.forEach { children ->
+							when (children.key) {
+								"date" -> {
+									attendance = attendance.copy(date = children.value.toString())
+								}
+								"state" -> {
+									attendance = attendance.copy(state = children.value.toString())
+								}
+							}
+						}
+						Log.e("data", attendance.toString())
+
+						_attendanceList.add(attendance)
+					}
+
+				}
+				//val student = dataSnapshot.getValue(Student::class.java)
+				//Log.e("student", student.toString())
+
+			}.addOnFailureListener {
+
+			}
+	}
+
+	fun getAttendanceStudentsOnDate(
+		date: String,
 		hakwonName: String
 	) {
 		database.child(hakwonName).child("students").get().addOnSuccessListener { dataSnapshot ->
-			//Log.e("DS Value", dataSnapshot.value.toString())
-
-			val value = dataSnapshot.value as ArrayList<*>
-			value.forEach { student ->
-				Log.e("student", student.toString())
+			val studentList = getStudentListFromDataSnapshot(dataSnapshot)
+			val filtList = mutableListOf<Student>()
+			studentList.forEach { student ->
+				student.attendance.forEach { attendance ->
+					if (attendance.date == date) {
+						filtList.add(student)
+					}
+				}
 			}
+			_attendanceStudentList.value = filtList
 		}
 	}
 
+	private fun getStudentListFromDataSnapshot(dataSnapshot: DataSnapshot): List<Student> {
+		val studentList = mutableListOf<Student>()
+		dataSnapshot.children.forEach { data ->
+			//Log.e("data", data.toString())
+
+			var student = Student()
+			val attendanceList = mutableListOf<Attendance>()
+			data.children.forEach { children ->
+				when (children.key) {
+					"name" -> {
+						student = student.copy(name = children.value!!.toString())
+					}
+					"phone" -> {
+						student = student.copy(phone = children.value!!.toString())
+					}
+					"attendance" -> {
+						children.children.forEach { attendanceData ->
+							attendanceData.getValue(Attendance::class.java)
+								?.let { attendanceList.add(it) }
+						}
+						student = student.copy(attendance = attendanceList)
+					}
+				}
+				//Log.e("key", children.key.toString())
+				//Log.e("CHILD", children.toString())
+			}
+			//Log.e("STU", student.toString())
+			studentList.add(student)
+		}
+		return studentList
+	}
+
+	/*
+	
+	-- Notice --
+	
+	 */
 	fun registNotice(
 		hakwonName: String,
 		notice: Notice,

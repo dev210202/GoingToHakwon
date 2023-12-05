@@ -5,26 +5,57 @@
 
     <data>
         <variable
-            name="name"
+            name="student"
+            type="dev210202.goingtohakwon.model.Student" />
+        <variable
+            name="state"
+            type="String" />
+        <variable
+            name="time"
             type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_margin="4dp"
-        android:padding="12dp"
-        android:background="@drawable/background_notice"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:background="@drawable/background_notice"
+        android:padding="12dp">
 
         <TextView
+            android:id="@+id/textView11"
             style="@style/tv_normal.bold"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_marginEnd="12dp"
             android:layout_height="wrap_content"
-            android:text="@{name}"
+            android:text="@{student.name}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="주이식" />
+
+        <TextView
+            style="@style/tv_normal"
+            android:id="@+id/tv_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{state}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="출석" />
+
+        <TextView
+            android:layout_marginEnd="8dp"
+            android:id="@+id/tv_time"
+            style="@style/tv_normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{time}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_state"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="14:00" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

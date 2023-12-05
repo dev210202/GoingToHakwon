@@ -2,6 +2,7 @@ package dev210202.goingtohakwon.utils
 
 import android.provider.ContactsContract.Data
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import dev210202.goingtohakwon.model.Attendance
 import java.time.LocalTime
 import java.util.*
 
@@ -31,4 +32,14 @@ fun getTime(): String {
 
 fun CalendarDay.getToday() : String{
 	return "${this.year}-${this.month + 1}-${this.day}"
+}
+
+fun List<Attendance>.convertCalendarDayList() : List<CalendarDay> {
+	return this.map {
+		CalendarDay.from(
+			it.date.getYear(),
+			it.date.getMonth() - 1,
+			it.date.getDay()
+		)
+	}
 }

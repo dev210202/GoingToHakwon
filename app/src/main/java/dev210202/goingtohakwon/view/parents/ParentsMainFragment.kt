@@ -6,6 +6,7 @@ import androidx.fragment.app.activityViewModels
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.FragmentParentsMainBinding
+import dev210202.goingtohakwon.model.Attendance
 import dev210202.goingtohakwon.utils.*
 import dev210202.goingtohakwon.view.DataViewModel
 
@@ -20,70 +21,49 @@ class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
 		viewModel.getNotice(viewModel.getHakwonName(), isFail = {
 			showToast(it.message)
 		})
+		viewModel.getAttendancesOnName(
+			studentName = viewModel.getChildName(),
+			hakwonName = viewModel.getHakwonName()
+		)
 
-		//		viewModel.getAttendance(
-		//			name = viewModel.getChildName(),
-		//			isFail = { message ->
-		//				showToast(message)
-		//			}
-		//		)
+
 		viewModel.noticeList.observe(this) { noticeList ->
 			if (noticeList.isNotEmpty()) {
 				val sortedList = noticeList.sortedBy { it.date }
 				binding.notice = sortedList.first()
 			}
 		}
-		//		viewModel.attendanceList.observe(this) { attendanceList ->
-		//			if (attendanceList.isNotEmpty()) {
-		//				val thisWeekAttendanceList = mutableListOf<String>()
-		//				val thisWeek = getDaysOfWeek()
-		//				val tvStates = getTvStateMap(thisWeek)
-		//
-		//				thisWeek.forEach { day ->
-		//					attendanceList.find { it == day }?.let { thisWeekAttendanceList.add(it) }
-		//				}
-		//				thisWeekAttendanceList.forEach { day ->
-		//					tvStates[day]?.let { it.text = "○" }
-		//				}
-		//				tvStates[getToday()]?.let {
-		//					it.background = resources.getDrawable(R.drawable.layout_stroke_bottom_white)
-		//				}
-		//			}
-		//
-		//		}
+		viewModel.attendanceList.observe(this) { attendanceList ->
+			if (attendanceList.isNotEmpty()) {
+				val thisWeekAttendanceList = mutableListOf<Attendance>()
+				val thisWeek = getDaysOfWeek()
+				val tvStates = getTvStateMap(thisWeek)
 
-		//		binding.bottomNavigation.setOnItemSelectedListener {item ->
-		//			when(item.itemId){
-		//				R.id.home -> {
-		//
-		//				}
-		//			}
-		//
-		//		}
+				thisWeek.forEach { day ->
+					attendanceList.find { it.date == day }
+						?.let { thisWeekAttendanceList.add(it) }
+				}
+				thisWeekAttendanceList.forEach { attendance ->
+					when(attendance.state){
+						"출석" ->{
+							tvStates[attendance.date]?.let { it.text = "○" }
+						}
+						"지각" ->{
+							tvStates[attendance.date]?.let { it.text = "△" }
+						}
+						"결석" ->{
+							tvStates[attendance.date]?.let { it.text = "✕" }
 
-		//		binding.layoutAttendance.setOnClickListener {
-		//
-		//			val view = layoutInflater.inflate(R.layout.layout_attendance, null)
-		//			val calendarDayList = viewModel.getAttendanceList()
-		//				.map { CalendarDay.from(it.getYear(), it.getMonth() - 1, it.getDay()) }
-		//			val calendarView = view.findViewById<MaterialCalendarView>(R.id.calendarView)
-		//			calendarView.addDecorators(DayDecorator(calendarDayList, requireContext()), TodayDecorator(requireContext()) )
-		//
-		//			val builder = androidx.appcompat.app.AlertDialog.Builder(binding.layoutAttendance.context)
-		//			builder.setView(view)
-		//			val dialog = builder.create().apply { show() }
-		//
-		//			val closeButton = view.findViewById<ImageButton>(R.id.btn_close)
-		//			closeButton.setOnClickListener {
-		//				dialog.dismiss()
-		//			}
-		//
-		//		}
-		//		binding.layoutNotice.setOnClickListener {
-		//			findNavController().navigate(
-		//				ParentsMainFragmentDirections.actionParentsMainFragmentToNoticeFragment()
-		//			)
-		//		}
+						}
+					}
+				}
+				tvStates[getToday()]?.let {
+					it.background = resources.getDrawable(R.drawable.layout_stroke_bottom_white)
+				}
+			}
+
+		}
+
 	}
 
 	private fun getTvStateMap(thisWeek: List<String>) = mapOf(

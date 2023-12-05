@@ -1,16 +1,16 @@
 package dev210202.goingtohakwon.view.admin
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.base.BaseFragment
 import com.prolificinteractive.materialcalendarview.CalendarDay
-import dev210202.goingtohakwon.CheckTodayDecorator
-import dev210202.goingtohakwon.DayDecorator
 import dev210202.goingtohakwon.R
-import dev210202.goingtohakwon.TodayDecorator
 import dev210202.goingtohakwon.databinding.FragmentAdminAttendancePersonBinding
+import dev210202.goingtohakwon.decorators.*
+import dev210202.goingtohakwon.model.Attendance
 import dev210202.goingtohakwon.utils.*
 import dev210202.goingtohakwon.view.DataViewModel
 
@@ -22,14 +22,20 @@ class AdminAttendancePersonFragment : BaseFragment<FragmentAdminAttendancePerson
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-
-		binding.btnNext.setOnClickListener {
-			viewModel.getAttendance(
-				name = binding.edittext.text.toString(),
-				isFail = {
-					showToast(it)
-				}
+		binding.calendarView.addDecorators(
+			TodayDecorator(requireContext())
+		)
+		binding.btnSearch.setOnClickListener {
+			viewModel.getAttendancesOnName(
+				hakwonName = viewModel.getHakwonName(),
+				studentName = binding.etName.text.toString()
 			)
+			//			viewModel.getAttendance(
+			//				name = binding.edittext.text.toString(),
+			//				isFail = {
+			//					showToast(it)
+			//				}
+			//			)
 		}
 
 		binding.fabCalendar.setOnClickListener {
@@ -39,24 +45,37 @@ class AdminAttendancePersonFragment : BaseFragment<FragmentAdminAttendancePerson
 		}
 
 		viewModel.attendanceList.observe(this) { attendanceList ->
-			val calendarDayList = attendanceList.map {
-				CalendarDay.from(
-					it.getYear(),
-					it.getMonth() - 1,
-					it.getDay()
+			val attendList = attendanceList.filter { it.state == "출석" }
+			val lateList = attendanceList.filter { it.state == "지각" }
+			val absentList = attendanceList.filter { it.state == "결석" }
+			attendList.find { it.date == getToday() }?.let {
+				binding.calendarView.addDecorators(
+					AttendDecorator(attendList.convertCalendarDayList(), requireContext()),
+					LateDecorator(lateList.convertCalendarDayList(), requireContext()),
+					AbsentDecorator(absentList.convertCalendarDayList(), requireContext()),
+					TodayAttendDecorator(requireContext())
 				)
 			}
-			if (attendanceList.contains(CalendarDay.today().getToday())) {
+			lateList.find { it.date == getToday() }?.let {
 				binding.calendarView.addDecorators(
-					DayDecorator(calendarDayList, requireContext()),
-					CheckTodayDecorator(requireContext())
-				)
-			} else {
-				binding.calendarView.addDecorators(
-					DayDecorator(calendarDayList, requireContext()),
-					TodayDecorator(requireContext())
+					AttendDecorator(attendList.convertCalendarDayList(), requireContext()),
+					LateDecorator(lateList.convertCalendarDayList(), requireContext()),
+					AbsentDecorator(absentList.convertCalendarDayList(), requireContext()),
+					TodayLateDecorator(requireContext())
 				)
 			}
+			absentList.find { it.date == getToday() }?.let {
+				binding.calendarView.addDecorators(
+					AttendDecorator(attendList.convertCalendarDayList(), requireContext()),
+					LateDecorator(lateList.convertCalendarDayList(), requireContext()),
+					AbsentDecorator(absentList.convertCalendarDayList(), requireContext()),
+					TodayAbsentDecorator(requireContext())
+				)
+			}
+
+
+
+
 		}
 	}
 }
