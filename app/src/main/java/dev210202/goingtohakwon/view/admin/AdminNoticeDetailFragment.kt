@@ -19,14 +19,14 @@ class AdminNoticeDetailFragment : BaseFragment<FragmentAdminNoticeDetailBinding>
 	private val attachmentAdapter: AttachmentAdapter by lazy {
 		AttachmentAdapter(
 			onAttachmentClicked = { uri ->
-				viewModel.downloadAttachment(uri,
+				viewModel.downloadAttachment(
+					hakwonName = viewModel.getHakwonName(),
+					uri = uri,
 					isSuccess = {uriResult ->
 						val intent = Intent(Intent.ACTION_VIEW)
 						intent.data= uriResult
 						startActivity(intent)
-					}, isFail = {
-						showToast(it)
-					})
+					}, isFail = showMessage)
 			}
 		)
 	}

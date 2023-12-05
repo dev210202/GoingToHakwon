@@ -1,5 +1,6 @@
 package dev210202.goingtohakwon.adpater
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -30,8 +31,6 @@ class AttachmentAdapter(
 		private val binding: ItemAttachmentBinding
 	) : ViewHolder(binding.root) {
 		val attachmentLayout = binding.layoutAttachment
-		val removeLayout = binding.layoutRemove
-		val removeButton = binding.btnRemove
 		fun bind(title: String) {
 			binding.title = title
 		}
@@ -55,9 +54,6 @@ class AttachmentAdapter(
 		holder.bind(title)
 		holder.attachmentLayout.setOnClickListener {
 			onAttachmentClicked(title)
-		}
-		holder.removeButton.setOnClickListener {
-			removeAttach(attachmentList[position])
 		}
 	}
 }

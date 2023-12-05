@@ -80,6 +80,26 @@ class DataViewModel : BaseViewModel() {
 		return _attachmentList.value!!.map { it.lastPathSegment.toString() }
 	}
 
+	fun checkExistAttachment(uri : Uri, isSuccess: () -> Unit, isFail: (String) -> Unit){
+		val attachmentUri =_attachmentList.value?.find { it == uri }
+		if(attachmentUri == null){
+			isSuccess()
+		}else{
+			isFail("같은 이름의 첨부파일이 존재합니다. 다른 이름으로 추가해주세요.")
+		}
+	}
+	fun resetAttachmentList() {
+		_attachmentList.value = listOf()
+	}
+
+
+	fun removeAttach(attachment: String) {
+		val attachmentUri = _attachmentList.value?.find { uri -> uri.lastPathSegment == attachment }
+		attachmentUri?.let {
+			_attachmentList.remove(it)
+		}
+	}
+
 	fun addAttachments(isSuccess: () -> Unit, isFail: (Message) -> Unit) {
 
 		_attachmentList.value!!.forEach { uri ->
@@ -93,18 +113,49 @@ class DataViewModel : BaseViewModel() {
 	}
 
 	fun downloadAttachment(
+		hakwonName: String,
 		uri: String,
 		isSuccess: (uri: Uri) -> Unit,
-		isFail: (String) -> Unit
+		isFail: (Message) -> Unit
 	) {
-		val pathString = "${getHakwonName()}/${uri}"
-		Log.e("PATH ", pathString)
+		val pathString = "${hakwonName}/${uri}"
 		storage.reference.child(pathString).downloadUrl.addOnCompleteListener { task ->
 			if (task.isSuccessful) {
 				isSuccess(task.result)
 			}
 		}.addOnFailureListener {
-			//isFail("통신중에 오류가 발생했습니다. 다시 시도해주세요.")
+			isFail(Message.NETWORK_ERROR)
+		}
+	}
+
+
+	fun deleteAttachments(
+		hakwonName: String,
+		uriList: List<String>,
+		isSuccess: () -> Unit,
+		isFail: (Message) -> Unit
+	) {
+		uriList.forEachIndexed { index, uri ->
+			deleteAttachment(hakwonName, uri, isFail = {
+				isFail(it)
+				return@deleteAttachment
+			})
+			if (index == uriList.lastIndex) {
+				isSuccess()
+			}
+		}
+
+	}
+
+	fun deleteAttachment(
+		hakwonName: String,
+		uri: String,
+		isFail: (Message) -> Unit
+	) {
+		val pathString = "${hakwonName}/${uri}"
+		storage.reference.child(pathString).delete().addOnSuccessListener {
+		}.addOnFailureListener {
+			isFail(Message.NETWORK_ERROR)
 		}
 	}
 
@@ -154,16 +205,18 @@ class DataViewModel : BaseViewModel() {
 			result = { message ->
 				when (message) {
 					Message.NOT_REGIST_STUDENT -> {
-						database.child(hakwonName).child("students").child(childName).setValue(
-							Student(
-								name = childName,
-								phone = phone
-							)
-						).addOnSuccessListener {
-							isSuccess()
-						}.addOnFailureListener {
-							isFail(Message.NETWORK_ERROR)
-						}
+						database.child(hakwonName).child("students").child(childName + phone)
+							.setValue(
+								//						database.child(hakwonName).child("students").push().setValue(
+								Student(
+									name = childName,
+									phone = phone
+								)
+							).addOnSuccessListener {
+								isSuccess()
+							}.addOnFailureListener {
+								isFail(Message.NETWORK_ERROR)
+							}
 					}
 					Message.REGIST_STUDENT -> {
 						isFail(message)
@@ -251,7 +304,7 @@ class DataViewModel : BaseViewModel() {
 			result = { message ->
 				when (message) {
 					Message.REGIST_STUDENT -> {
-						database.child(hakwonName).child("students").child(studentName)
+						database.child(hakwonName).child("students").child(studentName + phone)
 							.child("attendance")
 							.child(date).setValue(Attendance(date, time, state))
 							.addOnSuccessListener {
@@ -274,9 +327,13 @@ class DataViewModel : BaseViewModel() {
 	}
 
 	/*
+	 *
+	 *
 			
 	-- Student --
-			
+
+	 *
+	 *
 	 */
 
 	private fun checkExistStudent(
@@ -285,7 +342,7 @@ class DataViewModel : BaseViewModel() {
 		phone: String,
 		result: (Message) -> Unit
 	) {
-		database.child(hakwonName).child("students").child(studentName).child("phone").get()
+		database.child(hakwonName).child("students").child(studentName + phone).child("phone").get()
 			.addOnSuccessListener { dataSnapshot ->
 				if (dataSnapshot.exists()) {
 					val phoneNumber = dataSnapshot.value
@@ -311,9 +368,7 @@ class DataViewModel : BaseViewModel() {
 				Log.e("datasnapshot", dataSnapshot.toString())
 				if (dataSnapshot.exists()) {
 					dataSnapshot.children.forEach { data ->
-						var attendance = Attendance(
-						)
-						//					var attendance = ""
+						var attendance = Attendance()
 						data.children.forEach { children ->
 							when (children.key) {
 								"date" -> {
@@ -449,4 +504,6 @@ class DataViewModel : BaseViewModel() {
 				isFail(Message.NETWORK_ERROR)
 			}
 	}
+
+
 }

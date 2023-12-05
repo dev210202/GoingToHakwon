@@ -72,6 +72,15 @@ class ExampleUnitTest {
 		println(CalendarDay.today())
 	}
 
+	@Test
+	fun count(){
+		val list = listOf<String>("1","2")
+		println(list.lastIndex)
+		list.forEachIndexed { index, s ->
+			println("index:$index")
+		}
+	}
+
 
 }
 

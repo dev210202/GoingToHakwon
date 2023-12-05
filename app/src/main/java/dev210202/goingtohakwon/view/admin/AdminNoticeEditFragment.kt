@@ -24,14 +24,18 @@ class AdminNoticeEditFragment : BaseFragment<FragmentAdminNoticeEditBinding>(
 	private val attachmentEditAdapter: AttachmentEditAdapter by lazy {
 		AttachmentEditAdapter(
 			onAttachmentClicked = { uri ->
-				viewModel.downloadAttachment(uri,
+				viewModel.downloadAttachment(
+					hakwonName = viewModel.getHakwonName(),
+					uri = uri,
 					isSuccess = { uriResult ->
 						val intent = Intent(Intent.ACTION_VIEW)
 						intent.data = uriResult
 						startActivity(intent)
-					}, isFail = {
-						showToast(it)
-					})
+					}, isFail = showMessage
+				)
+			},
+			onRemoveAttachmentClicked = { attachment ->
+				viewModel.removeAttach(attachment)
 			}
 		)
 	}
@@ -81,10 +85,7 @@ class AdminNoticeEditFragment : BaseFragment<FragmentAdminNoticeEditBinding>(
 		}
 
 		viewModel.attachmentList.observe(this) { list ->
-			if (list.isNotEmpty()) {
-				attachmentEditAdapter.setAttachList(viewModel.getAttachmentList())
-			}
-
+			attachmentEditAdapter.setAttachList(viewModel.getAttachmentList())
 		}
 
 	}
@@ -92,7 +93,11 @@ class AdminNoticeEditFragment : BaseFragment<FragmentAdminNoticeEditBinding>(
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		if (requestCode == 10 && resultCode == Activity.RESULT_OK) {
 			data?.data?.let {
-				viewModel.addAttachmentList(it)
+				viewModel.checkExistAttachment(it, isSuccess = {
+					viewModel.addAttachmentList(it)
+				}, isFail = { message ->
+					showToast(message)
+				})
 			}
 		}
 	}

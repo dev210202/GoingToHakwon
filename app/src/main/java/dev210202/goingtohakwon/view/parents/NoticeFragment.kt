@@ -30,8 +30,9 @@ class NoticeFragment : BaseFragment<FragmentNoticeBinding>(
 		binding.hakwonName = viewModel.getHakwonName()
 		binding.rvNotice.adapter = noticeAdapter
 
-		viewModel.noticeList.observe(this){
-			noticeAdapter.setHakwonNoticeList(viewModel.getNoticeList())
+		viewModel.noticeList.observe(this) {
+			noticeAdapter.setHakwonNoticeList(
+				viewModel.getNoticeList().sortedByDescending { it.date })
 		}
 	}
 }

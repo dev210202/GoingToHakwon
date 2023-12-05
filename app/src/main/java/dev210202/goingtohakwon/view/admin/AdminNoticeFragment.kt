@@ -42,10 +42,17 @@ class AdminNoticeFragment : BaseFragment<FragmentAdminNoticeBinding>(
 							)
 						}
 						R.id.dropdown_menu_delete -> {
-							viewModel.deleteNotice(
-								viewModel.getHakwonName(),
-								notice,
-								isSuccess = showMessage,
+							viewModel.deleteAttachments(
+								hakwonName = viewModel.getHakwonName(),
+								uriList = notice.attachment,
+								isSuccess = {
+									viewModel.deleteNotice(
+										viewModel.getHakwonName(),
+										notice,
+										isSuccess = showMessage,
+										isFail = showMessage
+									)
+								},
 								isFail = showMessage
 							)
 						}
@@ -70,7 +77,7 @@ class AdminNoticeFragment : BaseFragment<FragmentAdminNoticeBinding>(
 
 
 		viewModel.noticeList.observe(this) { list ->
-			adminNoticeAdapter.setHakwonNoticeList(list.sortedByDescending{ it.date })
+			adminNoticeAdapter.setHakwonNoticeList(list.sortedByDescending { it.date })
 		}
 	}
 }

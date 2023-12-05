@@ -5,29 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import dev210202.goingtohakwon.databinding.ItemAttachmentBinding
+import dev210202.goingtohakwon.databinding.ItemAttachmentEditBinding
 
 class AttachmentEditAdapter(
-	private val onAttachmentClicked: (uri: String) -> Unit
+	private val onAttachmentClicked: (uri: String) -> Unit,
+	private val onRemoveAttachmentClicked: (String) -> Unit
 ) : RecyclerView.Adapter<AttachmentEditAdapter.AttachmentViewHolder>() {
 
 	private var attachmentList = mutableListOf<String>()
 
 	fun setAttachList(list: List<String>) {
-		val attachList=  list.toMutableList()
-		attachList.removeAll{it.isEmpty()}
-		if (attachList.isNotEmpty()) {
-			attachmentList = attachList
-			notifyDataSetChanged()
-		}
-	}
-
-	private fun removeAttach(attachment: String){
-		attachmentList.remove(attachment)
+		val attachList = list.toMutableList()
+		attachList.removeAll { it.isEmpty() }
+		attachmentList = attachList
 		notifyDataSetChanged()
 	}
 
+
 	inner class AttachmentViewHolder(
-		private val binding: ItemAttachmentBinding
+		private val binding: ItemAttachmentEditBinding
 	) : ViewHolder(binding.root) {
 		val attachmentLayout = binding.layoutAttachment
 		val removeLayout = binding.layoutRemove
@@ -39,7 +35,7 @@ class AttachmentEditAdapter(
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachmentViewHolder {
 		return AttachmentViewHolder(
-			ItemAttachmentBinding.inflate(
+			ItemAttachmentEditBinding.inflate(
 				LayoutInflater.from(parent.context),
 				parent,
 				false
@@ -57,10 +53,10 @@ class AttachmentEditAdapter(
 			onAttachmentClicked(title)
 		}
 		holder.removeLayout.setOnClickListener {
-			removeAttach(attachmentList[position])
+			onRemoveAttachmentClicked(attachmentList[position])
 		}
 		holder.removeButton.setOnClickListener {
-			removeAttach(attachmentList[position])
+			onRemoveAttachmentClicked(attachmentList[position])
 		}
 	}
 }

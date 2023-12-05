@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.adpater.AttachmentAdapter
+import dev210202.goingtohakwon.adpater.AttachmentEditAdapter
 import dev210202.goingtohakwon.databinding.FragmentAdminNoticeAddBinding
 import dev210202.goingtohakwon.model.Notice
 import dev210202.goingtohakwon.utils.getToday
@@ -20,16 +21,19 @@ class AdminNoticeAddFragment : BaseFragment<FragmentAdminNoticeAddBinding>(
 	R.layout.fragment_admin_notice_add
 ) {
 	private val viewModel: DataViewModel by activityViewModels()
-	private val attachmentAdapter: AttachmentAdapter by lazy {
-		AttachmentAdapter(
+	private val attachmentEditAdapter: AttachmentEditAdapter by lazy {
+		AttachmentEditAdapter(
 			onAttachmentClicked = {
 
+			},
+			onRemoveAttachmentClicked = { attachment ->
+				viewModel.removeAttach(attachment)
 			}
 		)
 	}
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		binding.rvAttachment.adapter = attachmentAdapter
+		binding.rvAttachment.adapter = attachmentEditAdapter
 		binding.btnAddAttachment.setOnClickListener {
 			val intent = Intent(Intent.ACTION_GET_CONTENT)
 			intent.type = "*/*"
@@ -50,6 +54,7 @@ class AdminNoticeAddFragment : BaseFragment<FragmentAdminNoticeAddBinding>(
 							),
 							isSuccess = {
 								showMessage
+								viewModel.resetAttachmentList()
 								findNavController().popBackStack()
 							},
 							isFail = showMessage
@@ -75,17 +80,18 @@ class AdminNoticeAddFragment : BaseFragment<FragmentAdminNoticeAddBinding>(
 			}
 		}
 		viewModel.attachmentList.observe(this) { list ->
-			if (list.isNotEmpty()) {
-				attachmentAdapter.setAttachList(viewModel.getAttachmentList())
-			}
-
+				attachmentEditAdapter.setAttachList(viewModel.getAttachmentList())
 		}
 	}
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		if (requestCode == 10 && resultCode == Activity.RESULT_OK) {
 			data?.data?.let {
-				viewModel.addAttachmentList(it)
+				viewModel.checkExistAttachment(it, isSuccess = {
+					viewModel.addAttachmentList(it)
+				}, isFail = { message ->
+					showToast(message)
+				})
 			}
 		}
 	}

@@ -29,7 +29,7 @@ class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
 
 		viewModel.noticeList.observe(this) { noticeList ->
 			if (noticeList.isNotEmpty()) {
-				val sortedList = noticeList.sortedBy { it.date }
+				val sortedList = noticeList.sortedByDescending { it.date }
 				binding.notice = sortedList.first()
 			}
 		}
