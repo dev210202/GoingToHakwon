@@ -28,24 +28,26 @@ class AdminNoticeFragment : BaseFragment<FragmentAdminNoticeBinding>(
 					)
 				)
 			},
-			onMoreClicked = {notice, position, buttonView ->
+			onMoreClicked = { notice, position, buttonView ->
 				val popup = PopupMenu(requireContext(), buttonView)
 				popup.menuInflater.inflate(R.menu.menu_more, popup.menu)
 				popup.show()
 				popup.setOnMenuItemClickListener { menuItem ->
-					when(menuItem.itemId){
-						R.id.dropdown_menu_edit ->{
+					when (menuItem.itemId) {
+						R.id.dropdown_menu_edit -> {
 							findNavController().navigate(
-								AdminNoticeFragmentDirections.actionAdminNoticeFragmentToAdminNoticeEditFragment(notice, position)
+								AdminNoticeFragmentDirections.actionAdminNoticeFragmentToAdminNoticeEditFragment(
+									notice
+								)
 							)
 						}
 						R.id.dropdown_menu_delete -> {
-							viewModel.deleteNotice(position, isSuccess = {
-								showToast(it)
-							},
-							isFail = {
-								showToast(it)
-							})
+							viewModel.deleteNotice(
+								viewModel.getHakwonName(),
+								notice,
+								isSuccess = showMessage,
+								isFail = showMessage
+							)
 						}
 					}
 					false
@@ -56,19 +58,19 @@ class AdminNoticeFragment : BaseFragment<FragmentAdminNoticeBinding>(
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		binding.rvNotice.adapter = adminNoticeAdapter
-		viewModel.getNotice(isFail = { message ->
-			showToast(message)
+		viewModel.getNotice(viewModel.getHakwonName(), isFail = {
+			showToast(it.message)
 		})
 
-		binding.fabAdd.setOnClickListener{
+		binding.fabAdd.setOnClickListener {
 			findNavController().navigate(
-				AdminNoticeFragmentDirections.actionAdminNoticeFragmentToAdminAddNoticeFragment()
+				AdminNoticeFragmentDirections.actionAdminNoticeFragmentToAdminNoticeAddFragment()
 			)
 		}
 
 
 		viewModel.noticeList.observe(this) { list ->
-			adminNoticeAdapter.setHakwonNoticeList(list)
+			adminNoticeAdapter.setHakwonNoticeList(list.sortedByDescending{ it.date })
 		}
 	}
 }

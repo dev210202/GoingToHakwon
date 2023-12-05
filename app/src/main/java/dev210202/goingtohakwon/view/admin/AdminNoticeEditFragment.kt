@@ -6,10 +6,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import dev210202.goingtohakwon.base.BaseFragment
-import dev210202.goingtohakwon.Notice
+import dev210202.goingtohakwon.model.Notice
 import dev210202.goingtohakwon.R
-import dev210202.goingtohakwon.adpater.AttachmentAdapter
+import dev210202.goingtohakwon.adpater.AttachmentEditAdapter
 import dev210202.goingtohakwon.databinding.FragmentAdminNoticeEditBinding
+import dev210202.goingtohakwon.utils.Message
 import dev210202.goingtohakwon.utils.getToday
 import dev210202.goingtohakwon.utils.showToast
 import dev210202.goingtohakwon.view.DataViewModel
@@ -18,9 +19,10 @@ import dev210202.goingtohakwon.view.DataViewModel
 class AdminNoticeEditFragment : BaseFragment<FragmentAdminNoticeEditBinding>(
 	R.layout.fragment_admin_notice_edit
 ) {
+
 	private val viewModel: DataViewModel by activityViewModels()
-	private val attachmentAdapter: AttachmentAdapter by lazy {
-		AttachmentAdapter(
+	private val attachmentEditAdapter: AttachmentEditAdapter by lazy {
+		AttachmentEditAdapter(
 			onAttachmentClicked = { uri ->
 				viewModel.downloadAttachment(uri,
 					isSuccess = { uriResult ->
@@ -38,9 +40,8 @@ class AdminNoticeEditFragment : BaseFragment<FragmentAdminNoticeEditBinding>(
 
 		val notice = AdminNoticeEditFragmentArgs.fromBundle(requireArguments()).notice
 		binding.notice = notice
-		val position = AdminNoticeEditFragmentArgs.fromBundle(requireArguments()).position
-		attachmentAdapter.setAttachList(notice.attachment)
-		binding.rvAttachment.adapter = attachmentAdapter
+		attachmentEditAdapter.setAttachList(notice.attachment)
+		binding.rvAttachment.adapter = attachmentEditAdapter
 
 		binding.btnAddAttachment.setOnClickListener {
 			val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -52,33 +53,36 @@ class AdminNoticeEditFragment : BaseFragment<FragmentAdminNoticeEditBinding>(
 			if (viewModel.getAttachmentList().isNotEmpty()) {
 				viewModel.addAttachments(isSuccess = {
 					viewModel.editNotice(
-						Notice(
+						hakwonName = viewModel.getHakwonName(),
+						notice = (binding.notice as Notice).copy(
 							date = getToday(),
 							title = binding.etTitle.text.toString(),
 							content = binding.etContent.text.toString(),
 							attachment = viewModel.getAttachmentList()
-						), position, isSuccess = { showToast(it) }, isFail = { showToast(it) })
+						),
+						isSuccess = showMessage,
+						isFail = showMessage
+					)
 				}, isFail = {
-					showToast(it)
+					showToast(it.message)
 				})
 
 			} else {
-				viewModel.editNotice(Notice(
-					date = getToday(),
-					title = binding.etTitle.text.toString(),
-					content = binding.etContent.text.toString(),
-					attachment = viewModel.getAttachmentList()
-				), position, isSuccess = {
-					showToast("성공")
-				}, isFail = {
-					showToast(it)
-				})
+				viewModel.editNotice(
+					hakwonName = viewModel.getHakwonName(),
+					notice = (binding.notice as Notice).copy(
+						date = getToday(),
+						title = binding.etTitle.text.toString(),
+						content = binding.etContent.text.toString(),
+						attachment = viewModel.getAttachmentList()
+					), isSuccess = showMessage, isFail = showMessage
+				)
 			}
 		}
 
 		viewModel.attachmentList.observe(this) { list ->
 			if (list.isNotEmpty()) {
-				attachmentAdapter.setAttachList(viewModel.getAttachmentList())
+				attachmentEditAdapter.setAttachList(viewModel.getAttachmentList())
 			}
 
 		}

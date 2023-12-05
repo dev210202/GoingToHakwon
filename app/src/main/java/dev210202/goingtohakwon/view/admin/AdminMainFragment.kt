@@ -6,13 +6,12 @@ import androidx.fragment.app.activityViewModels
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.FragmentAdminMainBinding
-import dev210202.goingtohakwon.model.Attendance
 import dev210202.goingtohakwon.utils.getTime
 import dev210202.goingtohakwon.utils.getToday
 import dev210202.goingtohakwon.utils.showToast
 import dev210202.goingtohakwon.view.DataViewModel
 /*
-	fin - 11.29 17:00
+	fin - 11.29 20:30
  */
 class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 	R.layout.fragment_admin_main
@@ -51,6 +50,7 @@ class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 			studentName = binding.etChild.text.toString(),
 			date = getToday(),
 			time = getTime(),
+			phone = binding.etPhone.text.toString(),
 			state = state,
 			isSuccess = {
 				showToast("$state 처리되었습니다.")

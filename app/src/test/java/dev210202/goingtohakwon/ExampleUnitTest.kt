@@ -1,9 +1,19 @@
 package dev210202.goingtohakwon
 
+import android.content.Context
+import android.util.Log
+import androidx.test.core.app.ApplicationProvider
+import com.google.firebase.FirebaseApp
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import com.prolificinteractive.materialcalendarview.CalendarDay
+import dev210202.goingtohakwon.model.Notice
+import dev210202.goingtohakwon.utils.Message
 import dev210202.goingtohakwon.utils.convertToFormat
 import org.junit.Assert.*
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -61,6 +71,8 @@ class ExampleUnitTest {
 	fun d(){
 		println(CalendarDay.today())
 	}
+
+
 }
 
 

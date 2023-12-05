@@ -6,7 +6,7 @@
     <data>
         <variable
             name="notice"
-            type="dev210202.goingtohakwon.Notice" />
+            type="dev210202.goingtohakwon.model.Notice" />
     </data>
 
     <LinearLayout
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
-        tools:context=".view.admin.AdminAddNoticeFragment">
+        tools:context=".view.admin.AdminNoticeAddFragment">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tf_title"

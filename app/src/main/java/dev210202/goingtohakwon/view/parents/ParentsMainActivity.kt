@@ -24,6 +24,7 @@ class ParentsMainActivity : BaseActivity<ActivityParentsMainBinding>(
 
 		intent.getStringExtra("hakwonName")?.let { viewModel.setHakwonName(it) }
 		intent.getStringExtra("childName")?.let { viewModel.setChildName(it) }
+		intent.getStringExtra("phone")?.let { viewModel.setPhone(it) }
 
 		Log.e("ASdASD", viewModel.getChildName())
 	}

@@ -6,7 +6,7 @@
     <data>
         <variable
             name="notice"
-            type="dev210202.goingtohakwon.Notice" />
+            type="dev210202.goingtohakwon.model.Notice" />
         <variable
             name="hakwonName"
             type="String" />
@@ -20,20 +20,19 @@
         <TextView
             android:text="@{hakwonName}"
             android:id="@+id/textView"
-            style="@style/tv_large"
+            style="@style/tv_medium.bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="16dp"
-            android:background="@drawable/layout_stroke_bottom"
             android:gravity="center"
-            android:paddingBottom="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="예바미술교습소" />
 
         <TextView
+            android:textColor="@color/black_600"
             android:id="@+id/textView2"
             style="@style/tv_normal.bold"
             android:layout_width="wrap_content"
@@ -76,7 +75,7 @@
                 android:text="@{notice.date}"
                 android:id="@+id/tv_notice_date"
                 style="@style/tv_normal"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/white_600"
@@ -102,6 +101,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
+            android:textColor="@color/black_600"
             android:id="@+id/textView3"
             style="@style/tv_normal.bold"
             android:layout_width="match_parent"

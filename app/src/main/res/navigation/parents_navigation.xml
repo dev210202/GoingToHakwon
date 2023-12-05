@@ -36,7 +36,7 @@
         android:label="NoticeDetailFragment" >
         <argument
             android:name="notice"
-            app:argType="dev210202.goingtohakwon.Notice" />
+            app:argType="dev210202.goingtohakwon.model.Notice" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_setting"

@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import dev210202.goingtohakwon.utils.Message
+import dev210202.goingtohakwon.utils.showToast
 
 abstract class BaseFragment<B : ViewDataBinding>(
     layoutRes: Int
@@ -14,7 +16,7 @@ abstract class BaseFragment<B : ViewDataBinding>(
 
     protected lateinit var binding: B
         private set
-
+    val showMessage = { message : Message -> showToast(message.message)}
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

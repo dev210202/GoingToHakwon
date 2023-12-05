@@ -6,7 +6,7 @@
     <data>
         <variable
             name="notice"
-            type="dev210202.goingtohakwon.Notice" />
+            type="dev210202.goingtohakwon.model.Notice" />
     </data>
 
     <LinearLayout

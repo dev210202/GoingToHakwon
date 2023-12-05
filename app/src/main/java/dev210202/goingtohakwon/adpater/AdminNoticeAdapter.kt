@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import dev210202.goingtohakwon.Notice
+import dev210202.goingtohakwon.model.Notice
 import dev210202.goingtohakwon.databinding.ItemAdminNoticeBinding
 
 class AdminNoticeAdapter(
