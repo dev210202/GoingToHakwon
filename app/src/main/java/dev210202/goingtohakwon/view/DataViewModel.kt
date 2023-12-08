@@ -3,20 +3,30 @@ package dev210202.goingtohakwon.view
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.ktx.messaging
 import com.google.firebase.storage.ktx.storage
-import dev210202.goingtohakwon.model.MutableListLiveData
 import dev210202.goingtohakwon.base.BaseViewModel
-import dev210202.goingtohakwon.model.Attendance
-import dev210202.goingtohakwon.model.Hakwon
-import dev210202.goingtohakwon.model.Notice
-import dev210202.goingtohakwon.model.Student
-import dev210202.goingtohakwon.utils.Message
+import dev210202.goingtohakwon.model.*
+import dev210202.goingtohakwon.utils.Inko
+import dev210202.goingtohakwon.utils.ResponseMessage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import java.io.IOException
+import java.io.InputStream
 
 class DataViewModel : BaseViewModel() {
 
@@ -49,6 +59,12 @@ class DataViewModel : BaseViewModel() {
 	private var phone = ""
 	private var hakwonPassWord = ""
 
+	private val api =
+		"https://fcm.googleapis.com/v1/projects/goingtohakwon/messages:send"
+
+	private val url = api.toHttpUrlOrNull()!!.newBuilder().build()
+	private val client = OkHttpClient()
+
 	fun getHakwonName() = hakwonName
 	fun setHakwonName(name: String) {
 		hakwonName = name
@@ -80,16 +96,17 @@ class DataViewModel : BaseViewModel() {
 		return _attachmentList.value!!.map { it.lastPathSegment.toString() }
 	}
 
-	fun checkExistAttachment(uri : Uri, isSuccess: () -> Unit, isFail: (String) -> Unit){
-		val attachmentUri =_attachmentList.value?.find { it == uri }
-		if(attachmentUri == null){
+	fun checkExistAttachment(uri: Uri, isSuccess: () -> Unit, isFail: (String) -> Unit) {
+		val attachmentUri = _attachmentList.value?.find { it == uri }
+		if (attachmentUri == null) {
 			isSuccess()
-		}else{
+		} else {
 			isFail("같은 이름의 첨부파일이 존재합니다. 다른 이름으로 추가해주세요.")
 		}
 	}
+
 	fun resetAttachmentList() {
-		_attachmentList.value = listOf()
+		_attachmentList.postValue(listOf())
 	}
 
 
@@ -100,14 +117,14 @@ class DataViewModel : BaseViewModel() {
 		}
 	}
 
-	fun addAttachments(isSuccess: () -> Unit, isFail: (Message) -> Unit) {
+	fun addAttachments(isSuccess: () -> Unit, isFail: (ResponseMessage) -> Unit) {
 
 		_attachmentList.value!!.forEach { uri ->
 			storage.reference.child("${getHakwonName()}/${uri.lastPathSegment}").putFile(uri)
 				.addOnSuccessListener {
 					isSuccess()
 				}.addOnFailureListener {
-					isFail(Message.NETWORK_ERROR)
+					isFail(ResponseMessage.NETWORK_ERROR)
 				}
 		}
 	}
@@ -116,7 +133,7 @@ class DataViewModel : BaseViewModel() {
 		hakwonName: String,
 		uri: String,
 		isSuccess: (uri: Uri) -> Unit,
-		isFail: (Message) -> Unit
+		isFail: (ResponseMessage) -> Unit
 	) {
 		val pathString = "${hakwonName}/${uri}"
 		storage.reference.child(pathString).downloadUrl.addOnCompleteListener { task ->
@@ -124,7 +141,7 @@ class DataViewModel : BaseViewModel() {
 				isSuccess(task.result)
 			}
 		}.addOnFailureListener {
-			isFail(Message.NETWORK_ERROR)
+			isFail(ResponseMessage.NETWORK_ERROR)
 		}
 	}
 
@@ -133,7 +150,7 @@ class DataViewModel : BaseViewModel() {
 		hakwonName: String,
 		uriList: List<String>,
 		isSuccess: () -> Unit,
-		isFail: (Message) -> Unit
+		isFail: (ResponseMessage) -> Unit
 	) {
 		uriList.forEachIndexed { index, uri ->
 			deleteAttachment(hakwonName, uri, isFail = {
@@ -150,12 +167,12 @@ class DataViewModel : BaseViewModel() {
 	fun deleteAttachment(
 		hakwonName: String,
 		uri: String,
-		isFail: (Message) -> Unit
+		isFail: (ResponseMessage) -> Unit
 	) {
 		val pathString = "${hakwonName}/${uri}"
 		storage.reference.child(pathString).delete().addOnSuccessListener {
 		}.addOnFailureListener {
-			isFail(Message.NETWORK_ERROR)
+			isFail(ResponseMessage.NETWORK_ERROR)
 		}
 	}
 
@@ -165,7 +182,7 @@ class DataViewModel : BaseViewModel() {
 		childName: String,
 		phone: String,
 		isSuccess: () -> Unit,
-		isFail: (Message) -> Unit
+		isFail: (ResponseMessage) -> Unit
 	) {
 		checkExistStudent(
 			hakwonName = hakwonName,
@@ -173,13 +190,13 @@ class DataViewModel : BaseViewModel() {
 			phone = phone,
 			result = { message ->
 				when (message) {
-					Message.NOT_REGIST_STUDENT -> {
+					ResponseMessage.NOT_REGIST_STUDENT -> {
 						isFail(message)
 					}
-					Message.REGIST_STUDENT -> {
+					ResponseMessage.REGIST_STUDENT -> {
 						isSuccess()
 					}
-					Message.NETWORK_ERROR -> {
+					ResponseMessage.NETWORK_ERROR -> {
 						isFail(message)
 					}
 					else -> {
@@ -194,8 +211,9 @@ class DataViewModel : BaseViewModel() {
 		hakwonName: String,
 		childName: String,
 		phone: String,
+		token: String,
 		isSuccess: () -> Unit,
-		isFail: (Message) -> Unit
+		isFail: (ResponseMessage) -> Unit
 	) {
 		// TODO: 콜백으로 인한 가독성 문제 해결하기
 		checkExistStudent(
@@ -204,24 +222,25 @@ class DataViewModel : BaseViewModel() {
 			phone = phone,
 			result = { message ->
 				when (message) {
-					Message.NOT_REGIST_STUDENT -> {
+					ResponseMessage.NOT_REGIST_STUDENT -> {
 						database.child(hakwonName).child("students").child(childName + phone)
 							.setValue(
 								//						database.child(hakwonName).child("students").push().setValue(
 								Student(
+									token = token,
 									name = childName,
-									phone = phone
+									phone = phone,
 								)
 							).addOnSuccessListener {
 								isSuccess()
 							}.addOnFailureListener {
-								isFail(Message.NETWORK_ERROR)
+								isFail(ResponseMessage.NETWORK_ERROR)
 							}
 					}
-					Message.REGIST_STUDENT -> {
+					ResponseMessage.REGIST_STUDENT -> {
 						isFail(message)
 					}
-					Message.NETWORK_ERROR -> {
+					ResponseMessage.NETWORK_ERROR -> {
 						isFail(message)
 					}
 					else -> {
@@ -232,22 +251,22 @@ class DataViewModel : BaseViewModel() {
 		)
 	}
 
-	fun createHakwon(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (Message) -> Unit) {
+	fun createHakwon(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (ResponseMessage) -> Unit) {
 
 		checkExistHakwon(hakwon.name, result = { message ->
 			when (message) {
-				Message.NOT_REGIST_HAKWON -> {
+				ResponseMessage.NOT_REGIST_HAKWON -> {
 					database.child(hakwon.name).setValue(hakwon).addOnSuccessListener {
 						isSuccess()
 					}.addOnFailureListener {
-						isFail(Message.NETWORK_ERROR)
+						isFail(ResponseMessage.NETWORK_ERROR)
 					}
 				}
-				Message.REGIST_HAKWON -> {
-					isFail(Message.REGIST_HAKWON)
+				ResponseMessage.REGIST_HAKWON -> {
+					isFail(ResponseMessage.REGIST_HAKWON)
 				}
-				Message.NETWORK_ERROR -> {
-					isFail(Message.NETWORK_ERROR)
+				ResponseMessage.NETWORK_ERROR -> {
+					isFail(ResponseMessage.NETWORK_ERROR)
 				}
 				else -> {}
 			}
@@ -257,33 +276,33 @@ class DataViewModel : BaseViewModel() {
 
 	fun checkExistHakwon(
 		hakwonName: String,
-		result: (Message) -> Unit,
+		result: (ResponseMessage) -> Unit,
 	) {
 		database.child(hakwonName).get().addOnSuccessListener { dataSnapshot ->
 			if (dataSnapshot.exists()) {
-				result(Message.REGIST_HAKWON)
+				result(ResponseMessage.REGIST_HAKWON)
 			} else {
-				result(Message.NOT_REGIST_HAKWON)
+				result(ResponseMessage.NOT_REGIST_HAKWON)
 			}
 		}.addOnFailureListener {
-			result(Message.NETWORK_ERROR)
+			result(ResponseMessage.NETWORK_ERROR)
 		}
 	}
 
-	fun adminLogin(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (Message) -> Unit) {
+	fun adminLogin(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (ResponseMessage) -> Unit) {
 		database.child(hakwon.name).get().addOnSuccessListener { dataSnapshot ->
 			if (dataSnapshot.exists()) {
 				val password = dataSnapshot.child("password").value
 				if (password == hakwon.password) {
 					isSuccess()
 				} else {
-					isFail(Message.NOT_CORRECT_PW)
+					isFail(ResponseMessage.NOT_CORRECT_PW)
 				}
 			} else {
-				isFail(Message.NOT_REGIST_HAKWON)
+				isFail(ResponseMessage.NOT_REGIST_HAKWON)
 			}
 		}.addOnFailureListener {
-			isFail(Message.NETWORK_ERROR)
+			isFail(ResponseMessage.NETWORK_ERROR)
 		}
 	}
 
@@ -295,7 +314,7 @@ class DataViewModel : BaseViewModel() {
 		time: String,
 		state: String,
 		isSuccess: () -> Unit,
-		isFail: (Message) -> Unit
+		isFail: (ResponseMessage) -> Unit
 	) {
 		checkExistStudent(
 			hakwonName = hakwonName,
@@ -303,21 +322,21 @@ class DataViewModel : BaseViewModel() {
 			phone = phone,
 			result = { message ->
 				when (message) {
-					Message.REGIST_STUDENT -> {
+					ResponseMessage.REGIST_STUDENT -> {
 						database.child(hakwonName).child("students").child(studentName + phone)
 							.child("attendance")
 							.child(date).setValue(Attendance(date, time, state))
 							.addOnSuccessListener {
 								isSuccess()
 							}.addOnFailureListener {
-								isFail(Message.NETWORK_ERROR)
+								isFail(ResponseMessage.NETWORK_ERROR)
 							}
 					}
-					Message.NETWORK_ERROR -> {
-						isFail(Message.NETWORK_ERROR)
+					ResponseMessage.NETWORK_ERROR -> {
+						isFail(ResponseMessage.NETWORK_ERROR)
 					}
-					Message.NOT_REGIST_STUDENT -> {
-						isFail(Message.NOT_REGIST_STUDENT)
+					ResponseMessage.NOT_REGIST_STUDENT -> {
+						isFail(ResponseMessage.NOT_REGIST_STUDENT)
 					}
 					else -> {}
 				}
@@ -340,22 +359,22 @@ class DataViewModel : BaseViewModel() {
 		hakwonName: String,
 		studentName: String,
 		phone: String,
-		result: (Message) -> Unit
+		result: (ResponseMessage) -> Unit
 	) {
 		database.child(hakwonName).child("students").child(studentName + phone).child("phone").get()
 			.addOnSuccessListener { dataSnapshot ->
 				if (dataSnapshot.exists()) {
 					val phoneNumber = dataSnapshot.value
 					if (phone == phoneNumber) {
-						result(Message.REGIST_STUDENT)
+						result(ResponseMessage.REGIST_STUDENT)
 					} else {
-						result(Message.NOT_REGIST_STUDENT)
+						result(ResponseMessage.NOT_REGIST_STUDENT)
 					}
 				} else {
-					result(Message.NOT_REGIST_STUDENT)
+					result(ResponseMessage.NOT_REGIST_STUDENT)
 				}
 			}.addOnFailureListener {
-				result(Message.NETWORK_ERROR)
+				result(ResponseMessage.NETWORK_ERROR)
 			}
 	}
 
@@ -411,6 +430,34 @@ class DataViewModel : BaseViewModel() {
 		}
 	}
 
+	fun getStudentsTokens(
+		hakwonName: String,
+		isSuccess: (List<String>) -> Unit,
+		isFail: (ResponseMessage) -> Unit
+	) {
+		database.child(hakwonName).child("students").get().addOnSuccessListener { dataSnapshot ->
+			val studentList = getStudentListFromDataSnapshot(dataSnapshot)
+			isSuccess(studentList.map { it.token })
+		}.addOnFailureListener {
+			isFail(ResponseMessage.NETWORK_ERROR)
+		}
+	}
+
+	fun getStudentToken(
+		hakwonName: String,
+		studentName: String,
+		phone: String,
+		isSuccess: (String) -> Unit,
+		isFail: (ResponseMessage) -> Unit
+	) {
+		database.child(hakwonName).child("students").child(studentName + phone)
+			.child("token").get().addOnSuccessListener { dataSnapshot ->
+				isSuccess(dataSnapshot.value.toString())
+			}.addOnFailureListener {
+				isFail(ResponseMessage.NETWORK_ERROR)
+			}
+	}
+
 	private fun getStudentListFromDataSnapshot(dataSnapshot: DataSnapshot): List<Student> {
 		val studentList = mutableListOf<Student>()
 		dataSnapshot.children.forEach { data ->
@@ -443,6 +490,7 @@ class DataViewModel : BaseViewModel() {
 		return studentList
 	}
 
+
 	/*
 	
 	-- Notice --
@@ -451,17 +499,17 @@ class DataViewModel : BaseViewModel() {
 	fun registNotice(
 		hakwonName: String,
 		notice: Notice,
-		isSuccess: (Message) -> Unit,
-		isFail: (Message) -> Unit
+		isSuccess: (ResponseMessage) -> Unit,
+		isFail: (ResponseMessage) -> Unit
 	) {
 		database.child(hakwonName).child("notices").push().setValue(notice).addOnSuccessListener {
-			isSuccess(Message.REGIST_NOTICE)
+			isSuccess(ResponseMessage.REGIST_NOTICE)
 		}.addOnFailureListener {
-			isFail(Message.NETWORK_ERROR)
+			isFail(ResponseMessage.NETWORK_ERROR)
 		}
 	}
 
-	fun getNotice(hakwonName: String, isFail: (Message) -> Unit) {
+	fun getNotice(hakwonName: String, isFail: (ResponseMessage) -> Unit) {
 		database.child(hakwonName).child("notices").get().addOnSuccessListener { dataSnapshot ->
 			val noticeList = mutableListOf<Notice>()
 			dataSnapshot.children.forEach { data ->
@@ -470,22 +518,22 @@ class DataViewModel : BaseViewModel() {
 			}
 			_noticeList.value = noticeList
 		}.addOnFailureListener {
-			isFail(Message.NETWORK_ERROR)
+			isFail(ResponseMessage.NETWORK_ERROR)
 		}
 	}
 
 	fun editNotice(
 		hakwonName: String,
 		notice: Notice,
-		isSuccess: (Message) -> Unit,
-		isFail: (Message) -> Unit
+		isSuccess: (ResponseMessage) -> Unit,
+		isFail: (ResponseMessage) -> Unit
 	) {
 		database.child(hakwonName).child("notices").child(notice.uuid)
 			.updateChildren(notice.toMap())
 			.addOnSuccessListener {
-				isSuccess(Message.EDIT_NOTICE)
+				isSuccess(ResponseMessage.EDIT_NOTICE)
 			}.addOnFailureListener {
-				isFail(Message.NETWORK_ERROR)
+				isFail(ResponseMessage.NETWORK_ERROR)
 			}
 
 	}
@@ -493,17 +541,148 @@ class DataViewModel : BaseViewModel() {
 	fun deleteNotice(
 		hakwonName: String,
 		notice: Notice,
-		isSuccess: (Message) -> Unit,
-		isFail: (Message) -> Unit
+		isSuccess: (ResponseMessage) -> Unit,
+		isFail: (ResponseMessage) -> Unit
 	) {
 		database.child(hakwonName).child("notices").child(notice.uuid).removeValue()
 			.addOnSuccessListener {
 				_noticeList.remove(notice)
-				isSuccess(Message.REMOVE_NOTICE)
+				isSuccess(ResponseMessage.REMOVE_NOTICE)
 			}.addOnFailureListener {
-				isFail(Message.NETWORK_ERROR)
+				isFail(ResponseMessage.NETWORK_ERROR)
 			}
 	}
 
+	/*
 
+	-- Notification
+
+	 */
+
+	fun getToken(
+		hakwonName: String,
+		isSuccess: (String) -> Unit,
+		isFail: (ResponseMessage) -> Unit
+	) {
+		Firebase.messaging.subscribeToTopic(Inko().en2ko(hakwonName))
+			.addOnCompleteListener { task ->
+				if (!task.isSuccessful) {
+					Log.e("task not suceessful", task.result.toString())
+				}
+			}
+		FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+			if (task.isSuccessful) {
+				isSuccess(task.result)
+			} else {
+				isFail(ResponseMessage.TOKEN_ERROR)
+			}
+		}
+	}
+
+	fun sendNoticeNotification(
+		accessToken: String,
+		hakwonName: String,
+		title: String,
+		content: String,
+		isSuccess: (ResponseMessage) -> Unit,
+		isFail: (ResponseMessage) -> Unit
+	) {
+
+
+		val json = JSONObject().apply {
+			put("message", JSONObject().apply {
+				put("topic", Inko().en2ko(hakwonName))
+				put("notification", JSONObject().apply {
+					put("title", title)
+					put("body", content)
+				})
+			})
+		}
+
+		val body =
+			json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+
+		val request = Request.Builder()
+			.url(url)
+			.post(body)
+			.addHeader("Authorization", "Bearer $accessToken")
+			.addHeader("Content-Type", "application/json")
+			.build()
+
+		client.newCall(request).enqueue(object : Callback {
+			override fun onFailure(call: Call, e: IOException) {
+				isFail(ResponseMessage.NETWORK_ERROR)
+				e.printStackTrace()
+			}
+
+			override fun onResponse(call: Call, response: Response) {
+				// Handle success
+				val responseBody = response.body?.string()
+
+				isSuccess(ResponseMessage.SEND_NOTIFICATIONS)
+				println("FCM Response: $responseBody")
+			}
+		})
+
+	}
+
+	fun getAccessToken(asset: InputStream, isSuccess: (String) -> Unit) =
+		viewModelScope.launch(Dispatchers.IO) {
+			val googleCredential =
+				GoogleCredential.fromStream(asset)
+					.createScoped(listOf("https://www.googleapis.com/auth/firebase.messaging"))
+			//googleCredential.refreshToken()
+			if (googleCredential.accessToken.isNullOrEmpty()) {
+				googleCredential.refreshToken()
+				isSuccess(googleCredential.accessToken)
+			} else {
+				isSuccess(googleCredential.accessToken)
+			}
+		}
+
+	fun sendAttendanceNotification(
+		token: String,
+		accessToken: String,
+		title: String,
+		content: String,
+		isSuccess: (ResponseMessage) -> Unit,
+		isFail: (ResponseMessage) -> Unit
+	) {
+		val json = JSONObject().apply {
+			put("message", JSONObject().apply {
+				put("token", token)
+				put("notification", JSONObject().apply {
+					put("title", title)
+					put("body", content)
+				})
+			})
+		}
+
+		val body =
+			json.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+
+
+		val request = Request.Builder()
+			.url(url)
+			.post(body)
+			.addHeader("Authorization", "Bearer $accessToken")
+			.addHeader("Content-Type", "application/json")
+			.build()
+
+		client.newCall(request).enqueue(object : Callback {
+			override fun onFailure(call: Call, e: IOException) {
+				isFail(ResponseMessage.NETWORK_ERROR)
+				e.printStackTrace()
+			}
+
+			override fun onResponse(call: Call, response: Response) {
+				// Handle success
+				val responseBody = response.body?.string()
+
+				isSuccess(ResponseMessage.SEND_NOTIFICATIONS)
+				println("FCM Response: $responseBody")
+			}
+		})
+	}
 }

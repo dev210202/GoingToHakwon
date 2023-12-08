@@ -8,7 +8,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
-import dev210202.goingtohakwon.adpater.AttachmentAdapter
 import dev210202.goingtohakwon.adpater.AttachmentEditAdapter
 import dev210202.goingtohakwon.databinding.FragmentAdminNoticeAddBinding
 import dev210202.goingtohakwon.model.Notice
@@ -44,45 +43,68 @@ class AdminNoticeAddFragment : BaseFragment<FragmentAdminNoticeAddBinding>(
 			if (viewModel.getAttachmentList().isNotEmpty()) {
 				viewModel.addAttachments(
 					isSuccess = {
-						viewModel.registNotice(
-							hakwonName = viewModel.getHakwonName(),
-							notice = Notice(
-								date = getToday(),
-								title = binding.etTitle.text.toString(),
-								content = binding.etContent.text.toString(),
-								attachment = viewModel.getAttachmentList()
-							),
-							isSuccess = {
-								showMessage
-								viewModel.resetAttachmentList()
-								findNavController().popBackStack()
-							},
-							isFail = showMessage
-						)
+						registNotice {
+							getAccessToken { accessToken ->
+								sendNotification(accessToken)
+							}
+						}
 					},
-					isFail = showMessage
+					isFail = { showToast(it.message) }
 				)
 			} else {
-				viewModel.registNotice(
-					hakwonName = viewModel.getHakwonName(),
-					notice = Notice(
-						date = getToday(),
-						title = binding.etTitle.text.toString(),
-						content = binding.etContent.text.toString(),
-						attachment = viewModel.getAttachmentList()
-					),
-					isSuccess = {
-						showMessage
-						findNavController().popBackStack()
-					},
-					isFail = showMessage
-				)
+				registNotice {
+					getAccessToken { accessToken ->
+						sendNotification(accessToken)
+					}
+				}
 			}
 		}
 		viewModel.attachmentList.observe(this) { list ->
-				attachmentEditAdapter.setAttachList(viewModel.getAttachmentList())
+			attachmentEditAdapter.setAttachList(viewModel.getAttachmentList())
 		}
 	}
+
+	private fun registNotice(isSuccess: () -> Unit) {
+		viewModel.registNotice(
+			hakwonName = viewModel.getHakwonName(),
+			notice = Notice(
+				date = getToday(),
+				title = binding.etTitle.text.toString(),
+				content = binding.etContent.text.toString(),
+				attachment = viewModel.getAttachmentList()
+			),
+			isSuccess = {
+				isSuccess()
+			}, isFail = {
+				showToast(it.message)
+			})
+
+	}
+
+	private fun getAccessToken(isSuccess: (String) -> Unit) {
+		val asset = resources.assets.open("goingtohakwon-firebase-adminsdk.json")
+		viewModel.getAccessToken(asset, isSuccess = { accessToken ->
+			isSuccess(accessToken)
+		})
+	}
+
+	private fun sendNotification(accessToken : String) {
+		viewModel.sendNoticeNotification(
+			accessToken = accessToken,
+			hakwonName = viewModel.getHakwonName(),
+			title = binding.etTitle.text.toString(),
+			content = binding.etContent.text.toString(),
+			isSuccess = {
+				viewModel.resetAttachmentList()
+				requireActivity().runOnUiThread {
+					showToast(it.message)
+					findNavController().popBackStack()
+				}
+			}, isFail = {
+				showToast(it.message)
+			})
+	}
+
 
 	override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
 		if (requestCode == 10 && resultCode == Activity.RESULT_OK) {
