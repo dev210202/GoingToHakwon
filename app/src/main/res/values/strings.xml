@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GoingToHakwon</string>
+    <string name="app_name">학원 다녀오겠습니다!</string>
 
     <string-array name="info_textview">
         <item>다니고 있는 학원을 입력해주세요.</item>

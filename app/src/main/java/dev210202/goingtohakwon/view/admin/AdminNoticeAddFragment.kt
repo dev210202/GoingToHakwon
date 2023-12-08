@@ -92,7 +92,7 @@ class AdminNoticeAddFragment : BaseFragment<FragmentAdminNoticeAddBinding>(
 		viewModel.sendNoticeNotification(
 			accessToken = accessToken,
 			hakwonName = viewModel.getHakwonName(),
-			title = binding.etTitle.text.toString(),
+			title = "${viewModel.getHakwonName()} 안내문 알림${binding.etTitle.text.toString()}",
 			content = binding.etContent.text.toString(),
 			isSuccess = {
 				viewModel.resetAttachmentList()
