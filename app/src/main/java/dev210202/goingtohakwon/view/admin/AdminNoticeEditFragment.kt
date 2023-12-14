@@ -10,7 +10,6 @@ import dev210202.goingtohakwon.model.Notice
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.adpater.AttachmentEditAdapter
 import dev210202.goingtohakwon.databinding.FragmentAdminNoticeEditBinding
-import dev210202.goingtohakwon.utils.Message
 import dev210202.goingtohakwon.utils.getToday
 import dev210202.goingtohakwon.utils.showToast
 import dev210202.goingtohakwon.view.DataViewModel

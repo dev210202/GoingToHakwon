@@ -1,9 +1,11 @@
 package dev210202.goingtohakwon.view.login
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.databinding.FragmentAdminLoginBinding
@@ -19,42 +21,34 @@ class AdminLoginFragment : BaseFragment<FragmentAdminLoginBinding>(
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 		binding.tvRegist.setOnClickListener {
-			binding.tvRegistInfo.visibility = View.INVISIBLE
-			binding.tvRegist.visibility = View.INVISIBLE
-			binding.btnLogin.text = "등록"
+			findNavController().navigate(
+				AdminLoginFragmentDirections.actionAdminLoginFragmentToAdminRegistFragment()
+			)
 		}
 
 		binding.btnLogin.setOnClickListener {
-			if (binding.btnLogin.text == "등록") {
-				viewModel.createHakwon(
-					Hakwon(
-						name = binding.etHakwonName.text.toString(),
-						password = binding.etPassword.text.toString(),
-					),
-					isSuccess = {
-						// TODO: Toast 표시될 멘트 변경
-						startAdminMainActivity()
-					},
-					isFail = {
-						// TODO: Toast 표시될 멘트 변경
-						showToast(it.message)
+			viewModel.adminLogin(
+				hakwonName = binding.etHakwonName.text.toString(),
+				inputPassword = binding.etPassword.text.toString(),
+				isSuccess = {
+					if (binding.checkbox.isChecked) {
+						setAdminPreferences()
 					}
-				)
-			} else {
-				viewModel.adminLogin(
-					Hakwon(
-						name = binding.etHakwonName.text.toString(),
-						password = binding.etPassword.text.toString()
-					),
-					isSuccess = {
-						startAdminMainActivity()
-					},
-					isFail = {
-						// TODO: Toast 표시될 멘트 변경
-						showToast(it.message)
-					}
-				)
-			}
+					startAdminMainActivity()
+				},
+				isFail = {
+					showToast(it.message)
+				}
+			)
+		}
+	}
+
+	private fun setAdminPreferences() {
+		val sharedPref = activity?.getSharedPreferences("admin",Context.MODE_PRIVATE) ?: return
+		with(sharedPref.edit()) {
+			putString("hakwonName", binding.etHakwonName.text.toString())
+			putString("password", binding.etPassword.text.toString())
+			apply()
 		}
 	}
 

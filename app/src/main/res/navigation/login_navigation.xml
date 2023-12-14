@@ -22,10 +22,26 @@
         tools:layout="@layout/fragment_parents_login"
         android:id="@+id/parentsLoginFragment"
         android:name="dev210202.goingtohakwon.view.login.ParentsLoginFragment"
-        android:label="ParentsLoginFragment" />
+        android:label="ParentsLoginFragment" >
+        <action
+            android:id="@+id/action_parentsLoginFragment_to_parentsRegistFragment"
+            app:destination="@id/parentsRegistFragment" />
+    </fragment>
     <fragment
         tools:layout="@layout/fragment_admin_login"
         android:id="@+id/adminLoginFragment"
         android:name="dev210202.goingtohakwon.view.login.AdminLoginFragment"
-        android:label="AdminLoginFragment" />
+        android:label="AdminLoginFragment" >
+        <action
+            android:id="@+id/action_adminLoginFragment_to_adminRegistFragment"
+            app:destination="@id/adminRegistFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/parentsRegistFragment"
+        android:name="dev210202.goingtohakwon.view.login.ParentsRegistFragment"
+        android:label="ParentsRegistFragment" />
+    <fragment
+        android:id="@+id/adminRegistFragment"
+        android:name="dev210202.goingtohakwon.view.login.AdminRegistFragment"
+        android:label="AdminRegistFragment" />
 </navigation>

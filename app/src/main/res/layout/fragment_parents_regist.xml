@@ -111,8 +111,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
-            android:visibility="invisible"
-            tools:visibility="invisible"
             android:id="@+id/checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -121,8 +119,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tf_child" />
 
         <TextView
-            android:visibility="invisible"
-            tools:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_semibold"

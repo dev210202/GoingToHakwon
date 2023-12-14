@@ -1,6 +1,6 @@
 package dev210202.goingtohakwon.utils
 
-enum class Message(val message : String) {
+enum class ResponseMessage(val message : String) {
 	NETWORK_ERROR("통신중에 오류가 발생했습니다."),
 
 	NOT_CORRECT_PW("비밀번호가 일치하지 않습니다."),

@@ -251,27 +251,12 @@ class DataViewModel : BaseViewModel() {
 		)
 	}
 
-	fun createHakwon(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (ResponseMessage) -> Unit) {
-
-		checkExistHakwon(hakwon.name, result = { message ->
-			when (message) {
-				ResponseMessage.NOT_REGIST_HAKWON -> {
-					database.child(hakwon.name).setValue(hakwon).addOnSuccessListener {
-						isSuccess()
-					}.addOnFailureListener {
-						isFail(ResponseMessage.NETWORK_ERROR)
-					}
-				}
-				ResponseMessage.REGIST_HAKWON -> {
-					isFail(ResponseMessage.REGIST_HAKWON)
-				}
-				ResponseMessage.NETWORK_ERROR -> {
-					isFail(ResponseMessage.NETWORK_ERROR)
-				}
-				else -> {}
-			}
-		})
-
+	fun registHakwon(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (ResponseMessage) -> Unit) {
+		database.child(hakwon.name).setValue(hakwon).addOnSuccessListener {
+			isSuccess()
+		}.addOnFailureListener {
+			isFail(ResponseMessage.NETWORK_ERROR)
+		}
 	}
 
 	fun checkExistHakwon(
@@ -289,11 +274,11 @@ class DataViewModel : BaseViewModel() {
 		}
 	}
 
-	fun adminLogin(hakwon: Hakwon, isSuccess: () -> Unit, isFail: (ResponseMessage) -> Unit) {
-		database.child(hakwon.name).get().addOnSuccessListener { dataSnapshot ->
+	fun adminLogin(hakwonName: String, inputPassword: String,isSuccess: () -> Unit, isFail: (ResponseMessage) -> Unit) {
+		database.child(hakwonName).get().addOnSuccessListener { dataSnapshot ->
 			if (dataSnapshot.exists()) {
 				val password = dataSnapshot.child("password").value
-				if (password == hakwon.password) {
+				if (password == inputPassword) {
 					isSuccess()
 				} else {
 					isFail(ResponseMessage.NOT_CORRECT_PW)
@@ -355,7 +340,7 @@ class DataViewModel : BaseViewModel() {
 	 *
 	 */
 
-	private fun checkExistStudent(
+	fun checkExistStudent(
 		hakwonName: String,
 		studentName: String,
 		phone: String,
@@ -453,6 +438,22 @@ class DataViewModel : BaseViewModel() {
 		database.child(hakwonName).child("students").child(studentName + phone)
 			.child("token").get().addOnSuccessListener { dataSnapshot ->
 				isSuccess(dataSnapshot.value.toString())
+			}.addOnFailureListener {
+				isFail(ResponseMessage.NETWORK_ERROR)
+			}
+	}
+
+	fun updateStudentToken(
+		hakwonName: String,
+		studentName: String,
+		phone: String,
+		token: String,
+		isSuccess: (String) -> Unit,
+		isFail: (ResponseMessage) -> Unit
+	) {
+		database.child(hakwonName).child("students").child(studentName + phone).child("token")
+			.setValue(token).addOnSuccessListener {
+				isSuccess()
 			}.addOnFailureListener {
 				isFail(ResponseMessage.NETWORK_ERROR)
 			}
@@ -564,7 +565,7 @@ class DataViewModel : BaseViewModel() {
 		isSuccess: (String) -> Unit,
 		isFail: (ResponseMessage) -> Unit
 	) {
-		Firebase.messaging.subscribeToTopic(Inko().en2ko(hakwonName))
+		Firebase.messaging.subscribeToTopic(Inko().ko2en(hakwonName))
 			.addOnCompleteListener { task ->
 				if (!task.isSuccessful) {
 					Log.e("task not suceessful", task.result.toString())

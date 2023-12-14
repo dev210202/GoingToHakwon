@@ -1,13 +1,17 @@
 package dev210202.goingtohakwon.view.login
 
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.databinding.FragmentParentsLoginBinding
-import dev210202.goingtohakwon.utils.Message
+import dev210202.goingtohakwon.utils.ResponseMessage
 import dev210202.goingtohakwon.utils.showToast
 import dev210202.goingtohakwon.view.DataViewModel
 import dev210202.goingtohakwon.view.parents.ParentsMainActivity
@@ -19,89 +23,104 @@ class ParentsLoginFragment : BaseFragment<FragmentParentsLoginBinding>(
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
 		binding.tvRegist.setOnClickListener {
-			binding.tvRegistInfo.visibility = View.INVISIBLE
-			binding.tvRegist.visibility = View.INVISIBLE
-			binding.btnLogin.text = "등록"
+			findNavController().navigate(
+				ParentsLoginFragmentDirections.actionParentsLoginFragmentToParentsRegistFragment()
+			)
 		}
 
 		binding.btnLogin.setOnClickListener {
-			if (binding.btnLogin.text == "등록") {
-				viewModel.checkExistHakwon(
-					hakwonName = binding.etHakwonName.text.toString(),
-					result = { message ->
-						when (message) {
-							Message.REGIST_HAKWON -> {
-								registChild()
+			viewModel.checkExistHakwon(
+				hakwonName = binding.etHakwonName.text.toString(),
+				result = { message ->
+					when (message) {
+						ResponseMessage.REGIST_HAKWON -> {
+							getFirebaseToken { token ->
+								checkExistStudent {
+									updateStudentToken(token){
+										if(binding.checkbox.isChecked){
+											setParentsPreferences()
+										}
+										if (isAllPermissionGranted()) {
+											startParentsMainActivity()
+										} else {
+											startPermissionActivity()
+										}
+									}
+								}
 							}
-							Message.NOT_REGIST_HAKWON -> {
-								showToast(message = message.message)
-							}
-
-							Message.NETWORK_ERROR -> {
-								showToast(message = message.message)
-							}
-
-							else -> {}
+						}
+						else -> {
+							showToast(message = message.message)
 						}
 					}
-				)
-			} else {
-				viewModel.checkExistHakwon(
-					hakwonName = binding.etHakwonName.text.toString(),
-					result = { message ->
-						when (message) {
-							Message.REGIST_HAKWON -> {
-								loginHakwon()
-							}
-							Message.NOT_REGIST_HAKWON -> {
-								showToast(message = message.message)
-							}
-							Message.NETWORK_ERROR -> {
-								showToast(message = message.message)
-							}
-
-							else -> {}
-						}
-					}
-				)
-			}
+				}
+			)
 		}
-
 	}
 
-	private fun loginHakwon() {
-		viewModel.login(
+	private fun isAllPermissionGranted() : Boolean {
+		return PermissionActivity.requestPermissionList.all { permission ->
+			ContextCompat.checkSelfPermission(
+				requireContext(),
+				permission
+			) == PackageManager.PERMISSION_GRANTED
+		}
+	}
+
+	private fun setParentsPreferences() {
+		val sharedPref = activity?.getSharedPreferences("parents",Context.MODE_PRIVATE) ?: return
+		with (sharedPref.edit()) {
+			putString("hakwonName", binding.etHakwonName.text.toString())
+			putString("studentName", binding.etChild.text.toString())
+			putString("phone", binding.etPhone.text.toString())
+			apply()
+		}
+	}
+
+	private fun updateStudentToken(token: String, isSuccess: () -> Unit) {
+		viewModel.updateStudentToken(
 			hakwonName = binding.etHakwonName.text.toString(),
-			childName = binding.etChild.text.toString(),
+			studentName = binding.etChild.text.toString(),
 			phone = binding.etPhone.text.toString(),
+			token = token,
 			isSuccess = {
-				viewModel.run {
-					setChildName(binding.etChild.text.toString())
-					setHakwonName(binding.etHakwonName.text.toString())
-					setPhone(binding.etPhone.text.toString())
-				}
-				startParentsMainActivity()
+				isSuccess()
 			},
-			isFail = showMessage
+			isFail = { showToast(it.message) }
 		)
 	}
 
-	private fun registChild() {
-		viewModel.registChild(
+	private fun getFirebaseToken(isSuccess: (String) -> Unit) {
+		viewModel.getToken(
 			hakwonName = binding.etHakwonName.text.toString(),
-			childName = binding.etChild.text.toString(),
-			phone = binding.etPhone.text.toString(),
-			isSuccess = {
-				viewModel.run {
-					setChildName(binding.etChild.text.toString())
-					setHakwonName(binding.etHakwonName.text.toString())
-					setPhone(binding.etPhone.text.toString())
-				}
-				startParentsMainActivity()
+			isSuccess = { token ->
+				isSuccess(token)
 			},
-			isFail = showMessage
+			isFail = {
+				showToast(it.message)
+			}
 		)
 	}
+
+	private fun checkExistStudent(isSuccess: () -> Unit) {
+		viewModel.checkExistStudent(
+			hakwonName = binding.etHakwonName.text.toString(),
+			studentName = binding.etChild.text.toString(),
+			phone = binding.etPhone.text.toString(),
+			result = { message ->
+				when (message) {
+					ResponseMessage.REGIST_STUDENT -> {
+						isSuccess()
+					}
+					else -> {
+						showToast(message.message)
+					}
+				}
+
+			}
+		)
+	}
+
 
 	private fun startParentsMainActivity() {
 		val intent = Intent(requireContext(), ParentsMainActivity::class.java)
@@ -110,4 +129,15 @@ class ParentsLoginFragment : BaseFragment<FragmentParentsLoginBinding>(
 		intent.putExtra("phone", viewModel.getPhone())
 		startActivity(intent)
 	}
+
+	private fun startPermissionActivity() {
+		val intent = Intent(requireContext(), PermissionActivity::class.java)
+		intent.putExtra("hakwonName", viewModel.getHakwonName())
+		intent.putExtra("childName", viewModel.getChildName())
+		intent.putExtra("phone", viewModel.getPhone())
+		startActivity(intent)
+	}
+
+
+
 }

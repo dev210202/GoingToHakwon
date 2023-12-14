@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_bold"
-            android:text="관리자 로그인"
+            android:text="관리자 등록"
             android:textColor="@color/black"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,8 +83,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
-            tools:visibility="invisible"
-            android:visibility="invisible"
             android:id="@+id/checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -93,8 +91,6 @@
             app:layout_constraintTop_toBottomOf="@+id/tf_password" />
 
         <TextView
-            tools:visibility="invisible"
-            android:visibility="invisible"
             android:id="@+id/textView12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

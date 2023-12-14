@@ -1,6 +1,7 @@
 package dev210202.goingtohakwon.utils
 
 import android.app.Activity
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.firestore.DocumentSnapshot
@@ -22,6 +23,3 @@ fun String.getState() : String = this.split("-")[3]
 fun String.getDay(): Int = this.split("-")[2].toInt()
 fun String.getMonth(): Int = this.split("-")[1].toInt()
 fun String.getYear(): Int = this.split("-")[0].toInt()
-inline fun <reified T> DocumentSnapshot.toObjectNonNull(): T = toObject(T::class.java)!!
-
-val QuerySnapshot.isNotEmpty get() = !this.isEmpty
