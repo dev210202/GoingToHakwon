@@ -82,16 +82,33 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <CheckBox
+            android:id="@+id/checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintStart_toStartOf="@+id/tf_password"
+            app:layout_constraintTop_toBottomOf="@+id/tf_password" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="자동로그인"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/checkbox"
+            app:layout_constraintStart_toEndOf="@+id/checkbox"
+            app:layout_constraintTop_toTopOf="@+id/checkbox" />
 
         <LinearLayout
-            android:layout_marginTop="24dp"
             android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/checkbox"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tf_password">
+            app:layout_constraintTop_toTopOf="@+id/checkbox">
 
             <TextView
                 android:id="@+id/tv_regist_info"
@@ -118,16 +135,16 @@
         </LinearLayout>
 
         <Button
-            android:layout_marginTop="24dp"
-            app:cornerRadius="10dp"
-            style="@style/button_login"
             android:id="@+id/btn_login"
+            style="@style/button_login"
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="로그인"
+            app:cornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
+            app:layout_constraintTop_toBottomOf="@+id/checkbox" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
