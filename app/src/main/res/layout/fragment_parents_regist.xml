@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/pretendard_bold"
-            android:text="관리자 로그인"
+            android:text="학부모 등록"
             android:textColor="@color/black"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/pretendard_regular"
-            android:text="등록시에 입력한 정보를 입력해주세요."
+            android:text="입력한 정보들은 안전하게 보관됩니다."
             android:textColor="@color/black_600"
             app:layout_constraintStart_toStartOf="@+id/textView16"
             app:layout_constraintTop_toBottomOf="@+id/textView16" />
@@ -39,6 +39,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tf_hakwonName"
             android:layout_width="match_parent"
+
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:hint="학원명"
@@ -50,50 +51,79 @@
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:fontFamily="@font/pretendard_semibold"
-                android:textSize="16sp"
                 android:id="@+id/et_hakwonName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/pretendard_semibold"
+                android:textSize="16sp"
                 tools:text="예바" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_password"
-            android:layout_width="match_parent"
+            android:id="@+id/tf_child"
+            android:layout_width="0dp"
+            android:layout_marginEnd="16dp"
             android:layout_height="wrap_content"
             android:layout_marginVertical="16dp"
-            android:hint="비밀번호"
+            android:hint="자녀명"
             app:boxStrokeColor="@color/primary"
             app:helperTextEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tf_phone"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tf_hakwonName"
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_child"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/pretendard_semibold"
                 android:textSize="16sp"
-                android:id="@+id/et_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                tools:text="비밀번호" />
+                tools:text="자녀명" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_phone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            android:hint="휴대전화 뒷자리"
+            app:boxStrokeColor="@color/primary"
+            app:helperTextEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tf_child"
+            app:layout_constraintTop_toBottomOf="@+id/tf_hakwonName"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_phone"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pretendard_semibold"
+                android:textSize="16sp"
+                tools:text="휴대전화 뒷자리" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
-            android:layout_marginTop="24dp"
             android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tf_password">
+            app:layout_constraintTop_toBottomOf="@+id/tf_child">
 
             <TextView
+                tools:visibility="invisible"
+                android:visibility="invisible"
                 android:id="@+id/tv_regist_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -107,6 +137,8 @@
                 app:layout_constraintTop_toTopOf="@+id/tv_regist" />
 
             <TextView
+                tools:visibility="invisible"
+                android:visibility="invisible"
                 android:id="@+id/tv_regist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -118,13 +150,13 @@
         </LinearLayout>
 
         <Button
-            android:layout_marginTop="24dp"
-            app:cornerRadius="10dp"
             style="@style/button_login"
-            android:id="@+id/btn_login"
+            app:cornerRadius="10dp"
+            android:layout_marginTop="24dp"
+            android:id="@+id/btn_regist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="로그인"
+            android:text="등록"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />

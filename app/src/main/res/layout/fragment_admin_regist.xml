@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/pretendard_regular"
-            android:text="등록시에 입력한 정보를 입력해주세요."
+            android:text="입력한 정보들은 안전하게 보관됩니다."
             android:textColor="@color/black_600"
             app:layout_constraintStart_toStartOf="@+id/textView16"
             app:layout_constraintTop_toBottomOf="@+id/textView16" />
@@ -84,6 +84,9 @@
 
 
         <LinearLayout
+
+            tools:visibility="invisible"
+            android:visibility="invisible"
             android:layout_marginTop="24dp"
             android:id="@+id/linearLayout4"
             android:layout_width="wrap_content"
@@ -94,7 +97,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tf_password">
 
             <TextView
-                android:id="@+id/tv_regist_info"
+               android:id="@+id/tv_regist_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -121,10 +124,10 @@
             android:layout_marginTop="24dp"
             app:cornerRadius="10dp"
             style="@style/button_login"
-            android:id="@+id/btn_login"
+            android:id="@+id/btn_regist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="로그인"
+            android:text="등록"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
