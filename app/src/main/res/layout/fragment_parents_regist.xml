@@ -54,7 +54,7 @@
                 android:id="@+id/et_hakwonName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pretendard_semibold"
+                android:fontFamily="@font/pretendard_regular"
                 android:textSize="16sp"
                 tools:text="예바" />
 
@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
 
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pretendard_semibold"
+                android:fontFamily="@font/pretendard_regular"
                 android:textSize="16sp"
                 tools:text="자녀명" />
 
@@ -104,7 +104,7 @@
                 android:layout_width="match_parent"
 
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/pretendard_semibold"
+                android:fontFamily="@font/pretendard_regular"
                 android:textSize="16sp"
                 tools:text="휴대전화 뒷자리" />
 

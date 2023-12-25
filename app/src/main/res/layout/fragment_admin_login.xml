@@ -50,7 +50,7 @@
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:fontFamily="@font/pretendard_semibold"
+                android:fontFamily="@font/pretendard_regular"
                 android:textSize="16sp"
                 android:id="@+id/et_hakwonName"
                 android:layout_width="match_parent"
@@ -73,7 +73,7 @@
             tools:visibility="visible">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:fontFamily="@font/pretendard_semibold"
+                android:fontFamily="@font/pretendard_regular"
                 android:textSize="16sp"
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"

@@ -10,13 +10,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
         tools:context=".view.admin.AdminAttendancePersonFragment">
 
         <TextView
-            android:gravity="center"
             android:id="@+id/textView10"
-            style="@style/tv_normal.bold"
+            style="@style/tv_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="이름으로 출석확인"
@@ -24,52 +22,94 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginTop="24dp"
-            android:id="@+id/textfield"
+        <LinearLayout
+            android:padding="16dp"
+            android:id="@+id/linearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/textView10">
 
-            android:hint="이름"
-            app:boxStrokeColor="@color/primary"
-            app:helperTextEnabled="true"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView10"
-            tools:visibility="visible">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_name"
-                android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textfield"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_marginEnd="8dp"
                 android:layout_height="wrap_content"
-                tools:text="주이식" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="이름"
+                app:boxStrokeColor="@color/primary"
+                app:helperTextEnabled="true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView10"
+                tools:visibility="visible">
 
-        <Button
-            android:id="@+id/btn_search"
-            style="@style/Widget.Material3.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginTop="8dp"
-            android:elevation="8dp"
-            android:stateListAnimator="@anim/nav_default_enter_anim"
-            android:text="검색"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/pretendard_regular"
+                    android:textSize="16sp"
+                    tools:text="주이식" />
 
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textfield" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tf_phone"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+
+                android:hint="전화번호 뒷자리"
+                app:boxStrokeColor="@color/primary"
+                app:helperTextEnabled="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView10"
+                tools:visibility="visible">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/pretendard_regular"
+                    android:textSize="16sp"
+                    tools:text="1234" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_gravity="bottom"
+                android:padding="16dp"
+                android:background="@drawable/background_navy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+
+                    android:id="@+id/btn_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:background="@drawable/ic_search_24"
+                    android:elevation="8dp"
+                    android:stateListAnimator="@anim/nav_default_enter_anim"
+                    android:text="검색"
+
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+            </LinearLayout>
+
+        </LinearLayout>
 
 
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_search"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
             app:mcv_firstDayOfWeek="sunday" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -81,6 +121,17 @@
             android:src="@drawable/ic_calendar_month_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="출석은 ○, 지각은 △, 결석은 ✕로 표시됩니다."
+            android:textColor="@color/black_600"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

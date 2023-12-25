@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="notice"
             type="dev210202.goingtohakwon.model.Notice" />
@@ -12,23 +13,23 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_notice"
-        android:background="@drawable/background_notice"
-        android:layout_marginBottom="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:paddingLeft="16dp"
-      >
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/background_notice"
+        android:paddingLeft="16dp">
 
 
         <TextView
 
             android:id="@+id/textView5"
-            style="@style/tv_medium.bold"
             android:layout_width="0dp"
-            android:layout_marginEnd="12dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:fontFamily="@font/pretendard_semibold"
             android:text="@{notice.title}"
             android:textColor="@color/black"
+            android:textSize="20sp"
 
             app:layout_constraintBottom_toBottomOf="@+id/layout_more"
             app:layout_constraintEnd_toStartOf="@+id/layout_more"
@@ -38,25 +39,20 @@
 
         <TextView
             android:id="@+id/textView6"
-            style="@style/tv_small"
-            android:layout_width="0dp"
-            android:layout_marginEnd="12dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="16dp"
+            android:fontFamily="@font/pretendard_regular"
             android:text="@{notice.date}"
-            android:textColor="@color/black_500"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/layout_more"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textColor="@color/black_400"
             app:layout_constraintTop_toBottomOf="@+id/textView5"
             tools:text="11월 18일" />
 
         <LinearLayout
             android:id="@+id/layout_more"
-            android:padding="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -64,9 +60,24 @@
                 android:id="@+id/btn_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_more_vert_24"
-                />
+                android:background="@drawable/ic_more_vert_24" />
         </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:maxLines="3"
+            android:text="@{notice.content}"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            tools:text="123123\n12123\n123123" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -2,6 +2,7 @@ package dev210202.goingtohakwon.utils
 
 enum class ResponseMessage(val message : String) {
 	NETWORK_ERROR("통신중에 오류가 발생했습니다."),
+	TOKEN_ERROR("통신중에 오류가 발생했습니다. 앱을 다시 실행해주세요."),
 
 	NOT_CORRECT_PW("비밀번호가 일치하지 않습니다."),
 
@@ -15,6 +16,8 @@ enum class ResponseMessage(val message : String) {
 	EDIT_NOTICE("안내문이 수정되었습니다."),
 
 	REMOVE_NOTICE("안내문이 삭제되었습니다."),
+
+	SEND_NOTIFICATIONS("알림이 발송되었습니다."),
 
 
 }

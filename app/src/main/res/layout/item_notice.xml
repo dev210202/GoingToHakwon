@@ -23,7 +23,8 @@
             android:text="@{notice.title}"
             android:textColor="@color/black"
             android:id="@+id/textView5"
-            style="@style/tv_medium.bold"
+            android:fontFamily="@font/pretendard_semibold"
+            android:textSize="20sp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -34,13 +35,27 @@
         <TextView
             android:text="@{notice.date}"
             android:id="@+id/textView6"
-            style="@style/tv_small"
+            android:fontFamily="@font/pretendard_regular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/black_500"
+            android:textColor="@color/black_400"
             app:layout_constraintTop_toBottomOf="@+id/textView5"
             tools:text="11월 18일" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/pretendard_medium"
+            android:maxLines="3"
+            android:text="@{notice.content}"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView6"
+            tools:text="123123\n12123\n123123" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

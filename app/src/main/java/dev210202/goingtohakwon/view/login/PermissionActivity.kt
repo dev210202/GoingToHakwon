@@ -3,9 +3,9 @@ package dev210202.goingtohakwon.view.login
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -18,7 +18,7 @@ class PermissionActivity : BaseActivity<ActivityPermissionBinding>(
 	R.layout.activity_permission
 ) {
 	private lateinit var hakwonName: String
-	private lateinit var childName: String
+	private lateinit var studentName: String
 	private lateinit var phone: String
 	private var url =
 		"https://github.com/dev210202/imageReosurces/assets/32587845/c25a0bc7-782a-485b-87b1-56fc7f4276e5"
@@ -27,8 +27,9 @@ class PermissionActivity : BaseActivity<ActivityPermissionBinding>(
 		super.onCreate(savedInstanceState)
 
 		intent.getStringExtra("hakwonName")?.let { hakwonName = it }
-		intent.getStringExtra("childName")?.let { childName = it }
+		intent.getStringExtra("studentName")?.let { studentName = it }
 		intent.getStringExtra("phone")?.let { phone = it }
+		Log.e("permission LoginData", hakwonName + studentName + phone)
 
 		Glide.with(this)
 			.load(url).into(binding.imageView)
@@ -98,10 +99,10 @@ class PermissionActivity : BaseActivity<ActivityPermissionBinding>(
 	}
 
 	private fun startParentsActivity() {
-		val intent = Intent(this, ParentsMainActivity::class.java)
-		intent.putExtra("hakwonName", hakwonName)
-		intent.putExtra("childName", childName)
-		intent.putExtra("phone", phone)
-		startActivity(intent)
+		Intent(this, ParentsMainActivity::class.java).apply {
+			putExtra("hakwonName", hakwonName)
+			putExtra("studentName", studentName)
+			putExtra("phone", phone)
+		}.run(::startActivity)
 	}
 }

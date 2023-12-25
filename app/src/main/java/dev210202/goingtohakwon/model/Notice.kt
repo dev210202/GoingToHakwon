@@ -1,5 +1,6 @@
 package dev210202.goingtohakwon.model
 
+import android.net.Uri
 import com.google.firebase.database.Exclude
 import java.io.Serializable
 
@@ -8,7 +9,7 @@ data class Notice(
 	val date: String = "",
 	val title : String = "",
 	val content: String = "",
-	val attachment: List<String> = listOf("")
+	val attachment: List<String> = listOf(),
 ) : Serializable {
 
 	@Exclude

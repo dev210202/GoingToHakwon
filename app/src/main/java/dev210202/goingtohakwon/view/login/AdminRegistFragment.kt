@@ -3,17 +3,14 @@ package dev210202.goingtohakwon.view.login
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.databinding.FragmentAdminRegistBinding
 import dev210202.goingtohakwon.model.Hakwon
 import dev210202.goingtohakwon.utils.ResponseMessage
-import dev210202.goingtohakwon.utils.showToast
+import dev210202.goingtohakwon.utils.showSnackBar
 import dev210202.goingtohakwon.view.DataViewModel
 import dev210202.goingtohakwon.view.admin.AdminMainActivity
 
@@ -36,7 +33,7 @@ class AdminRegistFragment : BaseFragment<FragmentAdminRegistBinding>(
 							}
 						}
 						else -> {
-							showToast(message.message)
+							showSnackBar(message.message)
 						}
 					}
 				}
@@ -54,7 +51,7 @@ class AdminRegistFragment : BaseFragment<FragmentAdminRegistBinding>(
 				isSuccess()
 			},
 			isFail = {
-				showToast(it.message)
+				showSnackBar(it.message)
 			}
 		)
 	}

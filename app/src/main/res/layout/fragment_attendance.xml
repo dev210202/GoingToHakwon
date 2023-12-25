@@ -8,17 +8,29 @@
     </data>
 
     <LinearLayout
-        android:padding="16dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".view.parents.AttendanceFragment">
 
+        <TextView
+            style="@style/tv_top"
+            android:text="출석 확인"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:mcv_showOtherDates="defaults"
             app:mcv_firstDayOfWeek="sunday" />
+        <TextView
+            android:textColor="@color/black_600"
+            android:layout_margin="16dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/pretendard_medium"
+            android:text="출석은 ○, 지각은 △, 결석은 ✕로 표시됩니다."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 </layout>

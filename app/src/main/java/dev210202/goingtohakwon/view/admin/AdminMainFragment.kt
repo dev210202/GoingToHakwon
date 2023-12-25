@@ -2,14 +2,14 @@ package dev210202.goingtohakwon.view.admin
 
 import android.os.Bundle
 import android.view.View
+import android.view.View.OnClickListener
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.FragmentAdminMainBinding
 import dev210202.goingtohakwon.utils.getTime
 import dev210202.goingtohakwon.utils.getToday
-import dev210202.goingtohakwon.utils.showToast
+import dev210202.goingtohakwon.utils.showSnackBar
 import dev210202.goingtohakwon.view.DataViewModel
 
 class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
@@ -19,59 +19,35 @@ class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		binding.hakwonName = viewModel.getHakwonName()
 
-		binding.btnYes.setOnClickListener {
+		OnClickListener{ view ->
+			lateinit var state : String
+			when(view){
+				binding.btnYes -> state = "출석"
+				binding.btnLate -> state = "지각"
+				binding.btnNo -> state = "결석"
+			}
 			if (binding.etChild.text.toString().isNotEmpty()) {
-				checkAttendance("출석", isSuccess = {
+				checkAttendance(state, isSuccess = {
 					getStudentToken { studentToken ->
 						getAccessToken { accessToken ->
 							sendAttendanceNotification(
 								studentToken = studentToken,
 								accessToken = accessToken,
-								state = "출석"
+								state = state
 							)
 						}
 
 					}
 				})
 			} else {
-				showToast("이름을 입력하고 출석해주세요.")
+				showSnackBar("이름을 입력하고 출석해주세요.")
 			}
-		}
-		binding.btnLate.setOnClickListener {
-			if (binding.etChild.text.toString().isNotEmpty()) {
-				checkAttendance("지각", isSuccess = {
-					getStudentToken { studentToken ->
-						getAccessToken { accessToken ->
-							sendAttendanceNotification(
-								studentToken = studentToken,
-								accessToken = accessToken,
-								state = "지각"
-							)
-						}
-					}
-				})
-			} else {
-				showToast("이름을 입력하고 출석해주세요.")
-			}
+		}.run {
+			binding.btnYes.setOnClickListener(this)
+			binding.btnNo.setOnClickListener(this)
+			binding.btnLate.setOnClickListener(this)
 		}
 
-		binding.btnNo.setOnClickListener {
-			if (binding.etChild.text.toString().isNotEmpty()) {
-				checkAttendance("결석", isSuccess = {
-					getStudentToken { studentToken ->
-						getAccessToken { accessToken ->
-							sendAttendanceNotification(
-								studentToken = studentToken,
-								accessToken = accessToken,
-								state = "결석"
-							)
-						}
-					}
-				})
-			} else {
-				showToast("이름을 입력하고 출석해주세요.")
-			}
-		}
 	}
 
 	private fun checkAttendance(state: String, isSuccess: () -> Unit) {
@@ -83,11 +59,11 @@ class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 			phone = binding.etPhone.text.toString(),
 			state = state,
 			isSuccess = {
-				showToast("$state 처리되었습니다.")
+				showSnackBar("$state 처리되었습니다.")
 				isSuccess()
 			},
 			isFail = {
-				showToast(it.message)
+				showSnackBar(it.message)
 			}
 		)
 	}
@@ -101,7 +77,7 @@ class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 				isSuccess(studentToken)
 			},
 			isFail = {
-				showToast(it.message)
+				showSnackBar(it.message)
 			}
 		)
 	}
@@ -125,11 +101,11 @@ class AdminMainFragment : BaseFragment<FragmentAdminMainBinding>(
 			content = "${binding.etChild.text.toString()} 학생이 $state 했습니다.",
 			isSuccess = {
 				requireActivity().runOnUiThread {
-					showToast(it.message)
+					showSnackBar(it.message)
 				}
 			}, isFail = {
 				requireActivity().runOnUiThread {
-					showToast(it.message)
+					showSnackBar(it.message)
 				}
 			})
 	}

@@ -9,8 +9,7 @@ import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.databinding.FragmentAdminLoginBinding
-import dev210202.goingtohakwon.model.Hakwon
-import dev210202.goingtohakwon.utils.showToast
+import dev210202.goingtohakwon.utils.showSnackBar
 import dev210202.goingtohakwon.view.DataViewModel
 import dev210202.goingtohakwon.view.admin.AdminMainActivity
 
@@ -37,7 +36,7 @@ class AdminLoginFragment : BaseFragment<FragmentAdminLoginBinding>(
 					startAdminMainActivity()
 				},
 				isFail = {
-					showToast(it.message)
+					showSnackBar(it.message)
 				}
 			)
 		}

@@ -13,10 +13,10 @@
             android:id="@+id/action_parentsMainFragment_to_noticeFragment"
             app:destination="@id/noticeFragment" />
         <action
-            android:id="@+id/action_parentsMainFragment_to_settingFragment2"
+            android:id="@+id/action_parentsMainFragment_to_settingFragment"
             app:destination="@id/settingFragment" />
         <action
-            android:id="@+id/action_parentsMainFragment_to_attendanceFragment2"
+            android:id="@+id/action_parentsMainFragment_to_attendanceFragment"
             app:destination="@id/attendanceFragment" />
 
     </fragment>

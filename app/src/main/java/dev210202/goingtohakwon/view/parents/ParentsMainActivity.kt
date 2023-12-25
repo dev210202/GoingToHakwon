@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import dev210202.goingtohakwon.base.BaseActivity
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.ActivityParentsMainBinding
@@ -20,12 +21,19 @@ class ParentsMainActivity : BaseActivity<ActivityParentsMainBinding>(
 			supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
 		val navController = navHostFragment.navController
 
-		NavigationUI.setupWithNavController(binding.bottomNavigation, navController)
+		binding.bottomNavigation.apply {
+			setupWithNavController(navController)
+			setOnItemSelectedListener {item ->
+				NavigationUI.onNavDestinationSelected(item, navController)
+				navController.popBackStack(item.itemId, inclusive = false)
+				true
+			}
+		}
 
 		intent.getStringExtra("hakwonName")?.let { viewModel.setHakwonName(it) }
-		intent.getStringExtra("childName")?.let { viewModel.setChildName(it) }
+		intent.getStringExtra("studentName")?.let { viewModel.setStudentName(it) }
 		intent.getStringExtra("phone")?.let { viewModel.setPhone(it) }
 
-		Log.e("ASdASD", viewModel.getChildName())
+		Log.e("getLoginData", viewModel.getHakwonName() + viewModel.getStudentName() + viewModel.getPhone())
 	}
 }

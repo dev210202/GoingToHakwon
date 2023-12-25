@@ -10,8 +10,11 @@
     <color name="red">#D80000</color>
 
     <color name="black">#000000</color>
+    <color name="black_700">#4D4D4D</color>
     <color name="black_600">#666666</color>
     <color name="black_500">#808080</color>
+    <color name="black_400">#999999</color>
+    
 
     <color name="white">#ffffff</color>
     <color name="white_900">#F2F2F2</color>

@@ -8,17 +8,18 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/white_800"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
+
         tools:context=".view.admin.AdminNoticeFragment">
 
         <TextView
             android:id="@+id/textView"
-            style="@style/tv_normal.bold"
-            android:layout_width="wrap_content"
+            style="@style/tv_top"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+
             android:text="안내문"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -26,7 +27,7 @@
             tools:text="안내문 " />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="24dp"
+            android:layout_margin="16dp"
             android:id="@+id/rv_notice"
             android:layout_width="match_parent"
             android:layout_height="0dp"

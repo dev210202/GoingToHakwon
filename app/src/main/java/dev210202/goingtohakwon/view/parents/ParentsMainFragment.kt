@@ -3,6 +3,7 @@ package dev210202.goingtohakwon.view.parents
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.FragmentParentsMainBinding
@@ -18,12 +19,24 @@ class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
 
 		binding.hakwonName = viewModel.getHakwonName()
 
+		binding.tvNoticeAll.setOnClickListener {
+			findNavController().navigate(
+				ParentsMainFragmentDirections.actionParentsMainFragmentToNoticeFragment()
+			)
+		}
+		binding.tvAttendanceAll.setOnClickListener {
+			findNavController().navigate(
+				ParentsMainFragmentDirections.actionParentsMainFragmentToAttendanceFragment()
+			)
+		}
+
 		viewModel.getNotice(viewModel.getHakwonName(), isFail = {
-			showToast(it.message)
+			showSnackBar(it.message)
 		})
 		viewModel.getAttendancesOnName(
-			studentName = viewModel.getChildName(),
-			hakwonName = viewModel.getHakwonName()
+			studentName = viewModel.getStudentName(),
+			hakwonName = viewModel.getHakwonName(),
+			phone = viewModel.getPhone()
 		)
 
 
@@ -58,7 +71,7 @@ class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
 					}
 				}
 				tvStates[getToday()]?.let {
-					it.background = resources.getDrawable(R.drawable.layout_stroke_bottom_white)
+					it.background = resources.getDrawable(R.drawable.layout_stroke_bottom)
 				}
 			}
 
@@ -67,12 +80,12 @@ class ParentsMainFragment : BaseFragment<FragmentParentsMainBinding>(
 	}
 
 	private fun getTvStateMap(thisWeek: List<String>) = mapOf(
-		thisWeek[0] to binding.tvStateMon,
-		thisWeek[1] to binding.tvStateTue,
-		thisWeek[2] to binding.tvStateWed,
-		thisWeek[3] to binding.tvStateThu,
-		thisWeek[4] to binding.tvStateFri,
-		thisWeek[5] to binding.tvStateSat,
-		thisWeek[6] to binding.tvStateSun,
+		thisWeek[0] to binding.tvMon,
+		thisWeek[1] to binding.tvTue,
+		thisWeek[2] to binding.tvWed,
+		thisWeek[3] to binding.tvThu,
+		thisWeek[4] to binding.tvFri,
+		thisWeek[5] to binding.tvSat,
+		thisWeek[6] to binding.tvSun,
 	)
 }

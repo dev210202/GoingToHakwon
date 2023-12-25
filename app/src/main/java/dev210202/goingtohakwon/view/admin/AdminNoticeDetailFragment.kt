@@ -4,11 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.adpater.AttachmentAdapter
 import dev210202.goingtohakwon.databinding.FragmentAdminNoticeDetailBinding
-import dev210202.goingtohakwon.utils.showToast
+import dev210202.goingtohakwon.utils.showSnackBar
 import dev210202.goingtohakwon.view.DataViewModel
 
 
@@ -22,11 +23,11 @@ class AdminNoticeDetailFragment : BaseFragment<FragmentAdminNoticeDetailBinding>
 				viewModel.downloadAttachment(
 					hakwonName = viewModel.getHakwonName(),
 					uri = uri,
-					isSuccess = {uriResult ->
+					isSuccess = { uriResult ->
 						val intent = Intent(Intent.ACTION_VIEW)
-						intent.data= uriResult
+						intent.data = uriResult
 						startActivity(intent)
-					}, isFail = showMessage)
+					}, isFail = { showSnackBar(it.message) })
 			}
 		)
 	}
@@ -36,5 +37,11 @@ class AdminNoticeDetailFragment : BaseFragment<FragmentAdminNoticeDetailBinding>
 		binding.notice = notice
 		attachmentAdapter.setAttachList(notice.attachment)
 		binding.rvAttachment.adapter = attachmentAdapter
+		View.OnClickListener {
+			findNavController().popBackStack()
+		}.run {
+			binding.layoutBack.setOnClickListener(this)
+			binding.btnBack.setOnClickListener(this)
+		}
 	}
 }

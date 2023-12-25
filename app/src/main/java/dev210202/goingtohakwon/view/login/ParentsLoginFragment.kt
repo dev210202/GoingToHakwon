@@ -12,7 +12,7 @@ import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.databinding.FragmentParentsLoginBinding
 import dev210202.goingtohakwon.utils.ResponseMessage
-import dev210202.goingtohakwon.utils.showToast
+import dev210202.goingtohakwon.utils.showSnackBar
 import dev210202.goingtohakwon.view.DataViewModel
 import dev210202.goingtohakwon.view.parents.ParentsMainActivity
 
@@ -50,7 +50,7 @@ class ParentsLoginFragment : BaseFragment<FragmentParentsLoginBinding>(
 							}
 						}
 						else -> {
-							showToast(message = message.message)
+							showSnackBar(message = message.message)
 						}
 					}
 				}
@@ -86,7 +86,7 @@ class ParentsLoginFragment : BaseFragment<FragmentParentsLoginBinding>(
 			isSuccess = {
 				isSuccess()
 			},
-			isFail = { showToast(it.message) }
+			isFail = { showSnackBar(it.message) }
 		)
 	}
 
@@ -97,7 +97,7 @@ class ParentsLoginFragment : BaseFragment<FragmentParentsLoginBinding>(
 				isSuccess(token)
 			},
 			isFail = {
-				showToast(it.message)
+				showSnackBar(it.message)
 			}
 		)
 	}
@@ -113,7 +113,7 @@ class ParentsLoginFragment : BaseFragment<FragmentParentsLoginBinding>(
 						isSuccess()
 					}
 					else -> {
-						showToast(message.message)
+						showSnackBar(message.message)
 					}
 				}
 
@@ -123,19 +123,19 @@ class ParentsLoginFragment : BaseFragment<FragmentParentsLoginBinding>(
 
 
 	private fun startParentsMainActivity() {
-		val intent = Intent(requireContext(), ParentsMainActivity::class.java)
-		intent.putExtra("hakwonName", viewModel.getHakwonName())
-		intent.putExtra("childName", viewModel.getChildName())
-		intent.putExtra("phone", viewModel.getPhone())
-		startActivity(intent)
+		Intent(requireContext(), ParentsMainActivity::class.java).apply {
+			putExtra("hakwonName", binding.etHakwonName.text.toString())
+			putExtra("studentName", binding.etChild.text.toString())
+			putExtra("phone", binding.etPhone.text.toString())
+		}.run(::startActivity)
 	}
 
 	private fun startPermissionActivity() {
-		val intent = Intent(requireContext(), PermissionActivity::class.java)
-		intent.putExtra("hakwonName", viewModel.getHakwonName())
-		intent.putExtra("childName", viewModel.getChildName())
-		intent.putExtra("phone", viewModel.getPhone())
-		startActivity(intent)
+		Intent(requireContext(), PermissionActivity::class.java).apply {
+			putExtra("hakwonName", binding.etHakwonName.text.toString())
+			putExtra("studentName", binding.etChild.text.toString())
+			putExtra("phone", binding.etPhone.text.toString())
+		}.run(::startActivity)
 	}
 
 

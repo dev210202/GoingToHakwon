@@ -10,7 +10,7 @@ import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.adpater.AdminNoticeAdapter
 import dev210202.goingtohakwon.databinding.FragmentAdminNoticeBinding
-import dev210202.goingtohakwon.utils.showToast
+import dev210202.goingtohakwon.utils.showSnackBar
 import dev210202.goingtohakwon.view.DataViewModel
 
 @SuppressLint("RestrictedApi")
@@ -49,11 +49,11 @@ class AdminNoticeFragment : BaseFragment<FragmentAdminNoticeBinding>(
 									viewModel.deleteNotice(
 										viewModel.getHakwonName(),
 										notice,
-										isSuccess = showMessage,
-										isFail = showMessage
+										isSuccess = { showSnackBar(it.message) },
+										isFail = { showSnackBar(it.message) }
 									)
 								},
-								isFail = showMessage
+								isFail = { showSnackBar(it.message) }
 							)
 						}
 					}
@@ -66,7 +66,7 @@ class AdminNoticeFragment : BaseFragment<FragmentAdminNoticeBinding>(
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		binding.rvNotice.adapter = adminNoticeAdapter
 		viewModel.getNotice(viewModel.getHakwonName(), isFail = {
-			showToast(it.message)
+			showSnackBar(it.message)
 		})
 
 		binding.fabAdd.setOnClickListener {

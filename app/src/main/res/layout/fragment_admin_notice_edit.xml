@@ -10,16 +10,52 @@
     </data>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
+        android:orientation="vertical"
+
         tools:context=".view.admin.AdminNoticeAddFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+
+            <LinearLayout
+                android:id="@+id/layout_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_arrow_left_24"
+                    android:padding="16dp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/pretendard_bold"
+                android:text="안내문 수정"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tf_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
             app:boxStrokeColor="@color/primary"
             app:helperTextEnabled="true"
 
@@ -30,20 +66,24 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_title"
-                android:text="@{notice.title}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/pretendard_regular"
                 android:hint="제목"
+                android:textSize="16sp"
+                android:text="@{notice.title}"
                 tools:text="제목" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tf_content"
-            android:layout_weight="4"
+
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_margin="16dp"
             android:layout_marginVertical="12dp"
+            android:layout_weight="4"
             app:boxStrokeColor="@color/primary"
             app:helperTextEnabled="true"
             app:layout_constraintBottom_toTopOf="@+id/materialDivider2"
@@ -63,61 +103,84 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/materialDivider2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_add_attachment" />
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:background="@color/white_800"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/textView4"
-                style="@style/tv_medium.bold"
+                android:layout_margin="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/white_800"
+                android:fontFamily="@font/pretendard_bold"
+
                 android:text="첨부파일"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/btn_add_attachment"
-                style="?attr/materialIconButtonFilledStyle"
+            <LinearLayout
+                android:id="@+id/layout_add_attachment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/navy"
-                android:gravity="bottom"
-                app:icon="@drawable/ic_add_24"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/background_navy"
+                android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/btn_add_attachment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_add_24" />
+
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_weight="1"
-            tools:listitem="@layout/item_attachment"
-            android:id="@+id/rv_attachment"
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginBottom="16dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:layout_weight="4"
+            android:background="@color/white_800"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp">
 
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_attachment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/item_attachment_edit" />
 
-        <Button
-            android:id="@+id/btn_confirm"
-            style="@style/Widget.Material3.Button"
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:paddingBottom="16dp"
+            android:background="@color/white_800"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="수정"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_confirm"
+                app:cornerRadius="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:text="등록"
+                android:textSize="16sp"
+                android:fontFamily="@font/pretendard_bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </LinearLayout>
     </LinearLayout>
 </layout>

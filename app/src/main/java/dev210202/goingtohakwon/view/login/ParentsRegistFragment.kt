@@ -4,20 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.base.BaseFragment
 import dev210202.goingtohakwon.databinding.FragmentParentsRegistBinding
 import dev210202.goingtohakwon.utils.ResponseMessage
-import dev210202.goingtohakwon.utils.showToast
+import dev210202.goingtohakwon.utils.showSnackBar
 import dev210202.goingtohakwon.view.DataViewModel
 import dev210202.goingtohakwon.view.parents.ParentsMainActivity
-import retrofit2.Response
 
 class ParentsRegistFragment : BaseFragment<FragmentParentsRegistBinding>(
 	R.layout.fragment_parents_regist
@@ -45,14 +41,14 @@ class ParentsRegistFragment : BaseFragment<FragmentParentsRegistBinding>(
 												}											}
 										}
 										else ->{
-											showToast(message.message)
+											showSnackBar(message.message)
 										}
 									}
 								}
 							}
 						}
 						else -> {
-							showToast(message = message.message)
+							showSnackBar(message = message.message)
 						}
 					}
 				}
@@ -68,16 +64,16 @@ class ParentsRegistFragment : BaseFragment<FragmentParentsRegistBinding>(
 		}
 	}
 	private fun registStudent(token : String, isSuccess: () -> Unit) {
-		viewModel.registChild(
+		viewModel.registStudent(
 			hakwonName = binding.etHakwonName.text.toString(),
-			childName = binding.etChild.text.toString(),
+			studentName = binding.etChild.text.toString(),
 			phone = binding.etPhone.text.toString(),
 			token = token,
 			isSuccess = {
 				isSuccess()
 			},
 			isFail = {
-				showToast(it.message)
+				showSnackBar(it.message)
 			}
 		)
 	}
@@ -98,7 +94,7 @@ class ParentsRegistFragment : BaseFragment<FragmentParentsRegistBinding>(
 				isSuccess(token)
 			},
 			isFail = {
-				showToast(it.message)
+				showSnackBar(it.message)
 			}
 		)
 	}
@@ -113,18 +109,18 @@ class ParentsRegistFragment : BaseFragment<FragmentParentsRegistBinding>(
 		)
 	}
 	private fun startParentsMainActivity() {
-		val intent = Intent(requireContext(), ParentsMainActivity::class.java)
-		intent.putExtra("hakwonName", viewModel.getHakwonName())
-		intent.putExtra("childName", viewModel.getChildName())
-		intent.putExtra("phone", viewModel.getPhone())
-		startActivity(intent)
+		Intent(requireContext(), ParentsMainActivity::class.java).apply {
+			putExtra("hakwonName", binding.etHakwonName.text.toString())
+			putExtra("studentName", binding.etChild.text.toString())
+			putExtra("phone", binding.etPhone.text.toString())
+		}.run(::startActivity)
 	}
 
 	private fun startPermissionActivity() {
-		val intent = Intent(requireContext(), PermissionActivity::class.java)
-		intent.putExtra("hakwonName", viewModel.getHakwonName())
-		intent.putExtra("childName", viewModel.getChildName())
-		intent.putExtra("phone", viewModel.getPhone())
-		startActivity(intent)
+		Intent(requireContext(), PermissionActivity::class.java).apply {
+			putExtra("hakwonName", binding.etHakwonName.text.toString())
+			putExtra("studentName", binding.etChild.text.toString())
+			putExtra("phone", binding.etPhone.text.toString())
+		}.run(::startActivity)
 	}
 }

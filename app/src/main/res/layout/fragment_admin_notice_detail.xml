@@ -4,81 +4,118 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="notice"
             type="dev210202.goingtohakwon.model.Notice" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:background="@color/white_800"
         tools:context=".view.parents.NoticeDetailFragment">
 
-        <TextView
-            android:id="@+id/tv_title"
-            style="@style/tv_large"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@{notice.title}"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="안녕하세요 예바미술여러분" />
-
-        <TextView
-            android:id="@+id/tv_date"
-            style="@style/tv_small"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="@{notice.date}"
-            android:textColor="@color/black_500"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title"
-            tools:text="11월 18일" />
+            android:background="@color/white"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/layout_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageButton
+                    android:id="@+id/btn_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_arrow_left_24"
+                    android:padding="16dp" />
+            </LinearLayout>
+
+            <TextView
+                android:textSize="16sp"
+                android:fontFamily="@font/pretendard_bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="안내문 내용"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_weight="6"
+            android:background="@drawable/background_notice"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:fontFamily="@font/pretendard_semibold"
+                android:text="@{notice.title}"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="안녕하세요 11월 안내문 입니다" />
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/pretendard_regular"
+                android:text="@{notice.date}"
+                android:textColor="@color/black_400"
+                app:layout_constraintStart_toStartOf="@+id/textView20"
+                app:layout_constraintTop_toBottomOf="@+id/textView20"
+                tools:text="2023-11-11" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_margin="16dp"
+                android:fontFamily="@font/pretendard_medium"
+                android:text="@{notice.content}"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView21"
+                tools:text="123123\n12123\n123123" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
-            android:text="@{notice.content}"
-            android:id="@+id/tv_content"
-            style="@style/tv_normal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginVertical="12dp"
-            app:layout_constraintBottom_toTopOf="@+id/materialDivider"
-            app:layout_constraintTop_toBottomOf="@+id/tv_date"
-            tools:text="에에엥" />
-
-        <com.google.android.material.divider.MaterialDivider
-            android:id="@+id/materialDivider"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="476dp"
-            android:layout_marginBottom="12dp"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="16dp" />
-
-        <TextView
-            android:id="@+id/textView4"
-            style="@style/tv_normal.bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/pretendard_bold"
             android:text="첨부파일"
-            android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/materialDivider" />
-
-        <androidx.recyclerview.widget.RecyclerView
-           app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_attachment"
-            android:layout_marginTop="12dp"
-            android:id="@+id/rv_attachment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_weight="4"
+            android:layout_margin="16dp"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="0dp">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_attachment"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_attachment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

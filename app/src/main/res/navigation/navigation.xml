@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_adminMainFragment_to_adminAttendanceFragment"
             app:destination="@id/adminAttendanceFragment" />
+        <action
+            android:id="@+id/action_adminMainFragment_to_adminSettingFragment"
+            app:destination="@id/adminSettingFragment" />
     </fragment>
 
 
@@ -89,7 +92,19 @@
         tools:layout="@layout/fragment_admin_notice_add"
         android:id="@+id/adminNoticeAddFragment"
         android:name="dev210202.goingtohakwon.view.admin.AdminNoticeAddFragment"
-        android:label="AdminNoticeAddFragment" />
+        android:label="AdminNoticeAddFragment" >
+        <action
+            android:id="@+id/action_adminNoticeAddFragment_to_adminNoticeFragment"
+            app:destination="@id/adminNoticeFragment"
+            app:popUpTo="@id/adminNoticeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+      <fragment
+        tools:layout="@layout/fragment_admin_setting"
+        android:id="@+id/adminSettingFragment"
+        android:name="dev210202.goingtohakwon.view.admin.AdminSettingFragment"
+        android:label="AdminSettingFragment" >
+        </fragment>
 
 
 </navigation>

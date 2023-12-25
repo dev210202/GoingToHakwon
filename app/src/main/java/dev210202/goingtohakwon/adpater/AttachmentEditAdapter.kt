@@ -1,23 +1,54 @@
 package dev210202.goingtohakwon.adpater
 
+import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
+import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import dev210202.goingtohakwon.databinding.ItemAttachmentBinding
 import dev210202.goingtohakwon.databinding.ItemAttachmentEditBinding
 
 class AttachmentEditAdapter(
-	private val onAttachmentClicked: (uri: String) -> Unit,
-	private val onRemoveAttachmentClicked: (String) -> Unit
 ) : RecyclerView.Adapter<AttachmentEditAdapter.AttachmentViewHolder>() {
 
-	private var attachmentList = mutableListOf<String>()
+	private var attachList = mutableListOf<String>()
+	private var addAttachList = mutableListOf<Uri>()
+	private var removeAttachList = mutableListOf<String>()
+
+	fun addAttachment(attachment: String) {
+		attachList.add(attachment)
+		notifyDataSetChanged()
+	}
+
+	fun addAttachmentDataList(attachment: Uri) {
+		addAttachList.add(attachment)
+	}
+
+	private fun addRemoveAttachList(attachment: String) {
+		removeAttachList.add(attachment)
+	}
+
+	private fun removeAttach(attach: String) {
+		attachList.remove(attach)
+		notifyDataSetChanged()
+	}
+
+	private fun removeAddAttach(attachment: String) {
+		addAttachList.find { it.lastPathSegment.toString() == attachment }?.let { attach ->
+			addAttachList.remove(attach)
+		}
+	}
+
+
+	fun getRemoveAttachList() = removeAttachList
+	fun getAttachList() = attachList
+
+	fun getAddAttachList() = addAttachList
 
 	fun setAttachList(list: List<String>) {
-		val attachList = list.toMutableList()
-		attachList.removeAll { it.isEmpty() }
-		attachmentList = attachList
+		attachList = list.toMutableList()
+
 		notifyDataSetChanged()
 	}
 
@@ -25,7 +56,6 @@ class AttachmentEditAdapter(
 	inner class AttachmentViewHolder(
 		private val binding: ItemAttachmentEditBinding
 	) : ViewHolder(binding.root) {
-		val attachmentLayout = binding.layoutAttachment
 		val removeLayout = binding.layoutRemove
 		val removeButton = binding.btnRemove
 		fun bind(title: String) {
@@ -43,20 +73,24 @@ class AttachmentEditAdapter(
 		)
 	}
 
-	override fun getItemCount(): Int = attachmentList.size
+	override fun getItemCount(): Int = attachList.size
 
 	override fun onBindViewHolder(holder: AttachmentViewHolder, position: Int) {
 
-		val title = attachmentList[position]
+		val title = attachList[position]
 		holder.bind(title)
-		holder.attachmentLayout.setOnClickListener {
-			onAttachmentClicked(title)
+
+		OnClickListener {
+			if (!addAttachList.map { it.lastPathSegment.toString() }
+					.contains(attachList[position])) {
+				addRemoveAttachList(attachList[position])
+			}
+			removeAddAttach(attachList[position])
+			removeAttach(attachList[position])
+		}.run {
+			holder.removeLayout.setOnClickListener(this)
+			holder.removeButton.setOnClickListener(this)
 		}
-		holder.removeLayout.setOnClickListener {
-			onRemoveAttachmentClicked(attachmentList[position])
-		}
-		holder.removeButton.setOnClickListener {
-			onRemoveAttachmentClicked(attachmentList[position])
-		}
+//
 	}
 }

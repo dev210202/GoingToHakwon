@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,15 +14,13 @@
         tools:context=".view.login.LoginMainFragment">
 
         <ImageView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginBottom="36dp"
             android:background="@mipmap/ic_launcher"
             app:layout_constraintBottom_toTopOf="@+id/textView15"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHeight_percent="0.2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintWidth_percent="0.5" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/textView15"
@@ -44,6 +41,7 @@
             android:layout_marginTop="16dp"
             android:fontFamily="@font/pretendard_regular"
             android:gravity="center"
+
             android:text="복잡한 회원가입 절차 없이 간편하게 등록하고\n안내문, 출석 알림을 받아보세요!"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"

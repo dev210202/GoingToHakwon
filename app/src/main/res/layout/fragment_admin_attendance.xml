@@ -8,24 +8,25 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="@color/white_800"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
+
         tools:context=".view.admin.AdminAttendanceFragment">
 
         <TextView
+
             android:id="@+id/textView8"
-            style="@style/tv_normal.bold"
+            style="@style/tv_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:text="날짜로 출석확인"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-            android:layout_marginTop="24dp"
+            android:background="@color/white"
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -34,16 +35,28 @@
             app:layout_constraintTop_toBottomOf="@+id/textView8"
             app:mcv_firstDayOfWeek="sunday" />
 
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:fontFamily="@font/pretendard_semibold"
+            android:text="출석 명단"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_attendance"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="16dp"
+            android:layout_margin="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/calendarView"
+            app:layout_constraintTop_toBottomOf="@+id/textView22"
             tools:listitem="@layout/item_admin_attendance" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

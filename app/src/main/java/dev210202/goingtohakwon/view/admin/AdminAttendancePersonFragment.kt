@@ -1,16 +1,13 @@
 package dev210202.goingtohakwon.view.admin
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import dev210202.goingtohakwon.base.BaseFragment
-import com.prolificinteractive.materialcalendarview.CalendarDay
 import dev210202.goingtohakwon.R
 import dev210202.goingtohakwon.databinding.FragmentAdminAttendancePersonBinding
 import dev210202.goingtohakwon.decorators.*
-import dev210202.goingtohakwon.model.Attendance
 import dev210202.goingtohakwon.utils.*
 import dev210202.goingtohakwon.view.DataViewModel
 
@@ -28,14 +25,10 @@ class AdminAttendancePersonFragment : BaseFragment<FragmentAdminAttendancePerson
 		binding.btnSearch.setOnClickListener {
 			viewModel.getAttendancesOnName(
 				hakwonName = viewModel.getHakwonName(),
-				studentName = binding.etName.text.toString()
+				studentName = binding.etName.text.toString(),
+				phone = binding.etPhone.text.toString()
 			)
-			//			viewModel.getAttendance(
-			//				name = binding.edittext.text.toString(),
-			//				isFail = {
-			//					showToast(it)
-			//				}
-			//			)
+			showSnackBar("검색이 완료되었습니다.")
 		}
 
 		binding.fabCalendar.setOnClickListener {
@@ -72,9 +65,6 @@ class AdminAttendancePersonFragment : BaseFragment<FragmentAdminAttendancePerson
 					TodayAbsentDecorator(requireContext())
 				)
 			}
-
-
-
 
 		}
 	}
