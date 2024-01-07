@@ -76,7 +76,7 @@ class AdminNoticeFragment : BaseFragment<FragmentAdminNoticeBinding>(
 		}
 
 
-		viewModel.noticeList.observe(this) { list ->
+		viewModel.noticeList.observe(viewLifecycleOwner) { list ->
 			adminNoticeAdapter.setHakwonNoticeList(list.sortedByDescending { it.date })
 		}
 	}

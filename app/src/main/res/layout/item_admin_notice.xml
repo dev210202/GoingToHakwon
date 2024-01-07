@@ -30,21 +30,21 @@
             android:text="@{notice.title}"
             android:textColor="@color/black"
             android:textSize="20sp"
-
-            app:layout_constraintBottom_toBottomOf="@+id/layout_more"
-            app:layout_constraintEnd_toStartOf="@+id/layout_more"
+            android:layout_marginTop="16dp"
+             app:layout_constraintEnd_toStartOf="@+id/layout_more"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/layout_more"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="안녕하세요 예바미술여러분" />
 
         <TextView
             android:id="@+id/textView6"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:fontFamily="@font/pretendard_regular"
             android:text="@{notice.date}"
             android:textColor="@color/black_400"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView5"
             tools:text="11월 18일" />
 

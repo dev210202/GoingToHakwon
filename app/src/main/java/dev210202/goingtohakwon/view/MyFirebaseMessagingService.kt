@@ -48,11 +48,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 		var content = remoteMessage.notification?.body!!
 		var expandContent = ""
 
-		if (title.contains("안내문 알림")) {
-			expandContent = title.split("알림")[1] + "\n" + content
-			content = title.split("알림")[1]
-			title = title.split("알림")[0] + "알림"
-		}
+//		if (title.contains("안내문 알림")) {
+//			expandContent = title.split("알림")[1] + "\n" + content
+//			content = title.split("알림")[1]
+//			title = title.split("알림")[0] + "알림"
+//		}
 
 
 		val channelId = "channel"

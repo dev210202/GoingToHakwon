@@ -37,7 +37,7 @@ class AdminAttendanceFragment : BaseFragment<FragmentAdminAttendanceBinding>(
 			)
 		}
 
-		viewModel.attendanceStudentList.observe(this) { list ->
+		viewModel.attendanceStudentList.observe(viewLifecycleOwner) { list ->
 			adminAttendanceAdapter.setAttendanceList(list)
 		}
 	}

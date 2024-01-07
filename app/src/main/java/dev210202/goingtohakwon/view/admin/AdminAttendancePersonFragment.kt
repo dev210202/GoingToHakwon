@@ -37,7 +37,7 @@ class AdminAttendancePersonFragment : BaseFragment<FragmentAdminAttendancePerson
 			)
 		}
 
-		viewModel.attendanceList.observe(this) { attendanceList ->
+		viewModel.attendanceList.observe(viewLifecycleOwner) { attendanceList ->
 			val attendList = attendanceList.filter { it.state == "출석" }
 			val lateList = attendanceList.filter { it.state == "지각" }
 			val absentList = attendanceList.filter { it.state == "결석" }
